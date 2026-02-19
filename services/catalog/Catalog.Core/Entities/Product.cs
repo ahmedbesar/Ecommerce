@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Catalog.Core.Entities
         public string ImageFile { get; set; }
 
         [BsonRepresentation(MongoDB.Bson.BsonType.Decimal128)]
-        public decimal price { get; set; }
+        public decimal Price { get; set; }
 
         public string BrandId { get; set; }
         public ProductBrand Brand { get; set; }
