@@ -20,7 +20,7 @@ namespace Catalog.Application.Handlers.Queries
         public async Task<IEnumerable<ProductResponseDto>> Handle(GetProductByNameQuery request, CancellationToken cancellationToken)
         {
             var products = await _repository.GetAllProductsByNameAsync(request.Name, cancellationToken);
-            var response = _mapper.ToResponseList(products);
+            var response = _mapper.ToResponseListDto(products);
             return response;
         }
     }

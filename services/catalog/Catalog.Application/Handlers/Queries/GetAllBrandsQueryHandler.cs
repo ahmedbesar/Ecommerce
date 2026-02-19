@@ -18,7 +18,7 @@ namespace Catalog.Application.Handlers.Queries
         public async Task<IEnumerable<ProductBrandResponseDto>> Handle(GetAllBrandsQuery request, CancellationToken cancellationToken)
         {
             var brands = await _repository.GetAllBrandsAsync(cancellationToken);
-            var response = _mapper.ToResponseList(brands);
+            var response = _mapper.ToResponseListDto(brands);
             return response;
         }
     }

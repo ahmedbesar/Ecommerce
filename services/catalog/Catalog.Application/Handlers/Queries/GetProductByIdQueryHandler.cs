@@ -26,7 +26,7 @@ namespace Catalog.Application.Handlers.Queries
             {
                 return null!;
             }
-            var response = _mapper.ToResponse(product);
+            var response = _mapper.ToResponseDto(product);
             return response;
         }
     }
