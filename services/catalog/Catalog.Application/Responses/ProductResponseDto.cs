@@ -1,6 +1,6 @@
 namespace Catalog.Application.Responses
 {
-    public class ProductResponse
+    public sealed record  ProductResponseDto
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -8,7 +8,7 @@ namespace Catalog.Application.Responses
         public string Summary { get; set; }
         public string ImageFile { get; set; }
         public decimal Price { get; set; }
-        public ProductBrandResponse Brand { get; set; }
-        public ProductTypeResponse Type { get; set; }
+        public ProductBrandResponseDto Brand { get; set; }
+        public ProductTypeResponseDto Type { get; set; }
     }
 }

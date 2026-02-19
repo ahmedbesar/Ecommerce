@@ -7,7 +7,7 @@ namespace Catalog.Application.Mappers
     [Mapper]
     public partial class TypeMapper
     {
-        public partial ProductTypeResponse ToResponse(ProductType type);
-        public partial IEnumerable<ProductTypeResponse> ToResponseList(IEnumerable<ProductType> types);
+        public partial ProductTypeResponseDto ToResponse(ProductType type);
+        public partial IEnumerable<ProductTypeResponseDto> ToResponseList(IEnumerable<ProductType> types);
     }
 }

@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="Commands\" />
     <Folder Include="Handlers\Commands\" />
-    <Folder Include="Responses\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,25 +3,22 @@ using Catalog.Application.Queries;
 using Catalog.Application.Responses;
 using Catalog.Core.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Catalog.Application.Handlers.Queries
 {
-    public class GetAllBrandsQueryHandler : IRequestHandler<GetAllBrandsQuery, IEnumerable<ProductBrandResponse>>
+    public sealed class GetAllBrandsQueryHandler : IRequestHandler<GetAllBrandsQuery, IEnumerable<ProductBrandResponseDto>>
     {
         private readonly IBrandRepository _repository;
-
-        public GetAllBrandsQueryHandler(IBrandRepository repository)
+        private readonly BrandMapper _mapper;
+        public GetAllBrandsQueryHandler(IBrandRepository repository, BrandMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
-        public async Task<IEnumerable<ProductBrandResponse>> Handle(GetAllBrandsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProductBrandResponseDto>> Handle(GetAllBrandsQuery request, CancellationToken cancellationToken)
         {
-            var brands = await _repository.GetAllBrands();
-            var mapper = new BrandMapper();
-            var response = mapper.ToResponseList(brands);
+            var brands = await _repository.GetAllBrandsAsync(cancellationToken);
+            var response = _mapper.ToResponseList(brands);
             return response;
         }
     }

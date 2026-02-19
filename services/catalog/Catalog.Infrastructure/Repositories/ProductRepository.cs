@@ -1,4 +1,4 @@
-﻿using Catalog.Core.Entities;
+using Catalog.Core.Entities;
 using Catalog.Core.Interfaces;
 using Catalog.Infrastructure.Data.Contexts;
 using MongoDB.Driver;
@@ -14,61 +14,60 @@ namespace Catalog.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Product> GetProductById(string id)
+        public async Task<Product> GetProductByIdAsync(string id, CancellationToken cancellationToken = default)
         {
-            return await _context.Products.Find(p => p.Id == id).FirstOrDefaultAsync();
+            return await _context.Products.Find(p => p.Id == id).FirstOrDefaultAsync(cancellationToken);
         }
 
-
-        public async Task<IEnumerable<Product>> GetAllProductsByBrand(string name)
+        public async Task<IEnumerable<Product>> GetAllProductsByBrandAsync(string name, CancellationToken cancellationToken = default)
         {
             return await _context.Products
-                          .Find(p => p.Brand.Name == name).ToListAsync();
+                          .Find(p => p.Brand.Name == name).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsByName(string name)
+        public async Task<IEnumerable<Product>> GetAllProductsByNameAsync(string name, CancellationToken cancellationToken = default)
         {
             return await _context.Products
-                          .Find(p => p.Name == name).ToListAsync();
+                          .Find(p => p.Name == name).ToListAsync(cancellationToken);
         }
 
-        public async Task<Product> CreateProduct(Product product)
+        public async Task<Product> CreateProductAsync(Product product, CancellationToken cancellationToken = default)
         {
-            await _context.Products.InsertOneAsync(product);
+            await _context.Products.InsertOneAsync(product, cancellationToken: cancellationToken);
             return product;
         }
 
-        public async Task<bool> DeleteProduct(string id)
+        public async Task<bool> DeleteProductAsync(string id, CancellationToken cancellationToken = default)
         {
             var deletedProduct =
                  await _context.Products
-                 .DeleteOneAsync(p => p.Id == id);
+                 .DeleteOneAsync(p => p.Id == id, cancellationToken);
 
             return deletedProduct.IsAcknowledged && deletedProduct.DeletedCount > 0;
         }
 
-        public async Task<bool> UpdateProduct(Product product)
+        public async Task<bool> UpdateProductAsync(Product product, CancellationToken cancellationToken = default)
         {
             var updatedProduct =
                 await _context.Products
-                .ReplaceOneAsync(p => p.Id == product.Id, product);
+                .ReplaceOneAsync(p => p.Id == product.Id, product, cancellationToken: cancellationToken);
 
             return updatedProduct.IsAcknowledged && updatedProduct.ModifiedCount > 0;
         }
 
-        public async Task<IEnumerable<ProductBrand>> GetAllBrands()
+        public async Task<IEnumerable<ProductBrand>> GetAllBrandsAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.Brands.Find(p => true).ToListAsync();
+            return await _context.Brands.Find(p => true).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<ProductType>> GetAllTypes()
+        public async Task<IEnumerable<ProductType>> GetAllTypesAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.Types.Find(p => true).ToListAsync();
+            return await _context.Types.Find(p => true).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Product>> GetAllProducts()
+        public async Task<IEnumerable<Product>> GetAllProductsAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.Products.Find(p=> true).ToListAsync();
+            return await _context.Products.Find(p => true).ToListAsync(cancellationToken);
         }
     }
 }

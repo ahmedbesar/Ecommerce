@@ -3,7 +3,5 @@ using MediatR;
 
 namespace Catalog.Application.Queries
 {
-    public class GetAllBrandsQuery : IRequest<IEnumerable<ProductBrandResponse>>
-    {
-    }
+    public sealed record GetAllBrandsQuery : IRequest<IEnumerable<ProductBrandResponseDto>>;
 }

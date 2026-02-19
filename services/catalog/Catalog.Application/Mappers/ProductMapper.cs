@@ -7,7 +7,7 @@ namespace Catalog.Application.Mappers
     [Mapper]
     public partial class ProductMapper
     {
-        public partial ProductResponse ToResponse(Product product);
-        public partial IEnumerable<ProductResponse> ToResponseList(IEnumerable<Product> products);
+        public partial ProductResponseDto ToResponse(Product product);
+        public partial IEnumerable<ProductResponseDto> ToResponseList(IEnumerable<Product> products);
     }
 }
