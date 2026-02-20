@@ -1,7 +1,4 @@
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Catalog.Core.Entities
 {
@@ -14,7 +11,6 @@ namespace Catalog.Core.Entities
 
         [BsonRepresentation(MongoDB.Bson.BsonType.Decimal128)]
         public decimal Price { get; set; }
-
         public string BrandId { get; set; }
         public ProductBrand Brand { get; set; }
         public string TypeId { get; set; }
