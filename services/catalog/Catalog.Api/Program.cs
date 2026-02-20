@@ -1,7 +1,9 @@
+using Catalog.Application.Behaviors;
 using Catalog.Application.Mappers;
 using Catalog.Core.Interfaces;
 using Catalog.Infrastructure.Data.Contexts;
 using Catalog.Infrastructure.Repositories;
+using FluentValidation;
 using Microsoft.OpenApi;
 using System.Reflection;
 
@@ -43,8 +45,12 @@ builder.Services.AddSingleton<ProductMapper>();
 builder.Services.AddSingleton<BrandMapper>();
 builder.Services.AddSingleton<TypeMapper>();
 
-// MediatR for CQRS
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+// FluentValidation
+builder.Services.AddValidatorsFromAssembly(typeof(Catalog.Application.Commands.CreateProductCommand).Assembly);
+
+// MediatR for CQRS with Validation Behavior
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Catalog.Application.Commands.CreateProductCommand).Assembly));
+builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
 

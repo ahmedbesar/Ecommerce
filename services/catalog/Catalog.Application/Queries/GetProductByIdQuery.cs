@@ -1,18 +1,10 @@
-﻿using Catalog.Application.Responses;
+using Catalog.Application.Responses;
+using FluentResults;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Catalog.Application.Queries
+namespace Catalog.Application.Queries;
+
+public sealed record GetProductByIdQuery() : IRequest<Result<ProductResponseDto>>
 {
-    public sealed record GetProductByIdQuery : IRequest<ProductResponseDto>
-    {
-        public GetProductByIdQuery(string id)
-        {
-            Id = id;
-        }
-
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

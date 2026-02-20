@@ -1,5 +1,6 @@
-﻿using Catalog.Application.Queries;
+using Catalog.Application.Queries;
 using Catalog.Application.Responses;
+using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,8 +14,8 @@ namespace Catalog.Api.Controllers
         {
             _mediator = mediator;
         }
-
-        public async Task<ProductResponseDto> GetProductById([FromBody] GetProductByIdQuery query)
+        [HttpGet]
+        public async Task<Result<ProductResponseDto> > GetProductById(GetProductByIdQuery query)
         {
             var result = await _mediator.Send(query);
             return result;

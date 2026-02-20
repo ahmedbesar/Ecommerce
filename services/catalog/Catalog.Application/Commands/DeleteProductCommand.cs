@@ -1,9 +1,9 @@
+using FluentResults;
 using MediatR;
 
-namespace Catalog.Application.Commands
+namespace Catalog.Application.Commands;
+
+public sealed record DeleteProductCommand() : IRequest<Result>
 {
-    public sealed record DeleteProductCommand() : IRequest<bool>
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }
