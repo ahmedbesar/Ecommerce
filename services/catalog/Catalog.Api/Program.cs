@@ -37,8 +37,8 @@ builder.Services.AddSingleton<ICatalogContext, CatalogContext>();
 
 // Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IBrandRepository, ProductRepository>();
-builder.Services.AddScoped<ITypeRepository, ProductRepository>();
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+builder.Services.AddScoped<ITypeRepository, TypeRepository>();
 
 // Mappers
 builder.Services.AddSingleton<ProductMapper>();
