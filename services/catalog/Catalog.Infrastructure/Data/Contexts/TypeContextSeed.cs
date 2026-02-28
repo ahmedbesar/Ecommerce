@@ -1,4 +1,4 @@
-﻿using Catalog.Core.Entities;
+using Catalog.Core.Entities;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Catalog.Infrastructure.Data.Contexts
             if (hasTypes)
                 return;
 
-            var filePath = Path.Combine("Data", "SeedData", "types.json");
+            var filePath = Path.Combine(AppContext.BaseDirectory, "Data", "SeedData", "types.json");
 
             if (!File.Exists(filePath))
             {
