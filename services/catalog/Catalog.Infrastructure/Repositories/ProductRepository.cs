@@ -51,4 +51,10 @@ public class ProductRepository : IProductRepository
         var result = await _context.Products.DeleteOneAsync(p => p.Id == id, cancellationToken);
         return result.IsAcknowledged && result.DeletedCount > 0;
     }
+
+    public async Task<bool> DeleteAllProductsAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await _context.Products.DeleteManyAsync(_ => true, cancellationToken);
+        return result.IsAcknowledged && result.DeletedCount > 0;
+    }
 }

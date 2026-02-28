@@ -8,5 +8,6 @@ namespace Catalog.Core.Interfaces
     public interface IBrandRepository
     {
         Task<IEnumerable<ProductBrand>> GetAllBrandsAsync(CancellationToken cancellationToken = default);
+        Task<ProductBrand?> GetBrandByIdAsync(string id, CancellationToken cancellationToken = default);
     }
 }

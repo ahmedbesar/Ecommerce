@@ -18,4 +18,9 @@ public class BrandRepository : IBrandRepository
     {
         return await _context.Brands.Find(_ => true).ToListAsync(cancellationToken);
     }
+
+    public async Task<ProductBrand?> GetBrandByIdAsync(string id, CancellationToken cancellationToken = default)
+    {
+        return await _context.Brands.Find(b => b.Id == id).FirstOrDefaultAsync(cancellationToken);
+    }
 }

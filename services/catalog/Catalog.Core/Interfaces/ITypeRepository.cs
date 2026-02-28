@@ -8,5 +8,6 @@ namespace Catalog.Core.Interfaces
     public interface ITypeRepository
     {
         Task<IEnumerable<ProductType>> GetAllTypesAsync(CancellationToken cancellationToken = default);
+        Task<ProductType?> GetTypeByIdAsync(string id, CancellationToken cancellationToken = default);
     }
 }

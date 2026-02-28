@@ -14,5 +14,6 @@ namespace Catalog.Core.Interfaces
         Task<Product> CreateProductAsync(Product product, CancellationToken cancellationToken = default);
         Task<bool> UpdateProductAsync(Product product, CancellationToken cancellationToken = default);
         Task<bool> DeleteProductAsync(string id, CancellationToken cancellationToken = default);
+        Task<bool> DeleteAllProductsAsync(CancellationToken cancellationToken = default);
     }
 }

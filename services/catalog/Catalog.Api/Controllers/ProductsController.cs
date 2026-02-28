@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Controllers;
 
-public class ProductsController : BaseApiController
+[Route("api/products")]
+[ApiController]
+public class ProductsController : ControllerBase
 {
     private readonly IMediator _mediator;
 
@@ -61,6 +63,14 @@ public class ProductsController : BaseApiController
     public async Task<IResult> Delete(string id)
     {
         var result = await _mediator.Send(new DeleteProductCommand { Id = id });
+        return result.ToHttpResponse();
+    }
+
+    [HttpDelete]
+    [Route("delete-all")]
+    public async Task<IResult> DeleteAll()
+    {
+        var result = await _mediator.Send(new DeleteAllProductsCommand());
         return result.ToHttpResponse();
     }
 }

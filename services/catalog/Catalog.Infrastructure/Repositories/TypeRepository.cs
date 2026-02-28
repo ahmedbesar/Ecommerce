@@ -18,4 +18,9 @@ public class TypeRepository : ITypeRepository
     {
         return await _context.Types.Find(_ => true).ToListAsync(cancellationToken);
     }
+
+    public async Task<ProductType?> GetTypeByIdAsync(string id, CancellationToken cancellationToken = default)
+    {
+        return await _context.Types.Find(t => t.Id == id).FirstOrDefaultAsync(cancellationToken);
+    }
 }
