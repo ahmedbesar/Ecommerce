@@ -20,6 +20,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
             return await next();
 
         var context = new ValidationContext<TRequest>(request);
+
         var validationResults = await Task.WhenAll(
             _validators.Select(v => v.ValidateAsync(context, cancellationToken))
         );
@@ -29,24 +30,33 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
             .Where(f => f != null)
             .ToList();
 
-        if (failures.Count != 0)
+        if (failures.Count == 0)
+            return await next();
+
+        var errors = failures.Select(f => new Error(f.ErrorMessage)).ToList();
+
+        return CreateFailedResult(errors);
+    }
+
+    private static TResponse CreateFailedResult(List<Error> errors)
+    {
+        var responseType = typeof(TResponse);
+
+        if (responseType == typeof(Result))
         {
-            var errors = failures.Select(f => new Error(f.ErrorMessage));
-
-            if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(Result<>))
-            {
-                var resultType = typeof(TResponse).GetGenericArguments()[0];
-                var failMethod = typeof(Result).GetMethod("Fail", new[] { typeof(IEnumerable<IError>) })!
-                    .MakeGenericMethod(resultType);
-
-                return (TResponse)failMethod.Invoke(null, new object[] { errors })!;
-            }
-            else if (typeof(TResponse) == typeof(Result))
-            {
-                return (TResponse)(object)Result.Fail(errors);
-            }
+            return (TResponse)(object)Result.Fail((IEnumerable<IError>)errors);
         }
 
-        return await next();
+        if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
+        {
+            var valueType = responseType.GetGenericArguments()[0];
+            var failMethod = typeof(Result)
+                .GetMethod("Fail", 1, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public, null, new[] { typeof(IEnumerable<IError>) }, null)!
+                .MakeGenericMethod(valueType);
+
+            return (TResponse)failMethod.Invoke(null, new object[] { errors })!;
+        }
+
+        throw new InvalidOperationException($"Validation failed but response type {responseType.Name} is not supported. Use Result or Result<T>.");
     }
 }

@@ -28,9 +28,14 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .GreaterThan(0).WithMessage("Price must be greater than 0");
 
         RuleFor(x => x.BrandId)
-            .NotEmpty().WithMessage("BrandId is required");
+            .NotEmpty().WithMessage("BrandId is required")
+            .Matches(ValidationConstants.MongoObjectIdPattern)
+            .WithMessage("BrandId must be a valid MongoDB ObjectId (24 hex characters)");
 
         RuleFor(x => x.TypeId)
-            .NotEmpty().WithMessage("TypeId is required");
+            .NotEmpty().WithMessage("TypeId is required")
+            .Matches(ValidationConstants.MongoObjectIdPattern)
+            .WithMessage("TypeId must be a valid MongoDB ObjectId (24 hex characters)");
+
     }
 }

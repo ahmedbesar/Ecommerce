@@ -9,7 +9,9 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
     public UpdateProductCommandValidator()
     {
         RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id is required");
+            .NotEmpty().WithMessage("Id is required")
+            .Matches(ValidationConstants.MongoObjectIdPattern)
+            .WithMessage("Id must be a valid MongoDB ObjectId (24 hex characters)");
 
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required")
@@ -31,9 +33,13 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
             .GreaterThan(0).WithMessage("Price must be greater than 0");
 
         RuleFor(x => x.BrandId)
-            .NotEmpty().WithMessage("BrandId is required");
+            .NotEmpty().WithMessage("BrandId is required")
+            .Matches(ValidationConstants.MongoObjectIdPattern)
+            .WithMessage("BrandId must be a valid MongoDB ObjectId (24 hex characters)");
 
         RuleFor(x => x.TypeId)
-            .NotEmpty().WithMessage("TypeId is required");
+            .NotEmpty().WithMessage("TypeId is required")
+            .Matches(ValidationConstants.MongoObjectIdPattern)
+            .WithMessage("TypeId must be a valid MongoDB ObjectId (24 hex characters)");
     }
 }
