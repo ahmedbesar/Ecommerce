@@ -1,6 +1,8 @@
 using Catalog.Api.Extensions;
 using Catalog.Application.Commands;
 using Catalog.Application.Queries;
+using Catalog.Core.Specifications;
+using Catalog.Core.Specifications.Products;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +20,9 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IResult> GetAll()
+    public async Task<IResult> GetAll([FromQuery] ProductSpecificationParams specParams)
     {
-        var result = await _mediator.Send(new GetAllProductsQuery());
+        var result = await _mediator.Send(new GetAllProductsQuery(specParams));
         return result.ToHttpResponse();
     }
 

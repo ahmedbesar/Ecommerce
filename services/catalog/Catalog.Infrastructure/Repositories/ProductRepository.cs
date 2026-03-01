@@ -1,5 +1,6 @@
 using Catalog.Core.Entities;
 using Catalog.Core.Interfaces;
+using Catalog.Core.Specifications;
 using Catalog.Infrastructure.Data.Contexts;
 using MongoDB.Driver;
 
@@ -17,6 +18,25 @@ public class ProductRepository : IProductRepository
     public async Task<IEnumerable<Product>> GetAllProductsAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Products.Find(_ => true).ToListAsync(cancellationToken);
+    }
+
+    public async Task<Pagination<Product>> GetProductsAsync(ISpecification<Product> spec, CancellationToken cancellationToken = default)
+    {
+        var totalCount = await _context.Products.CountDocumentsAsync(spec.FilterDefinition, cancellationToken: cancellationToken);
+
+        var query = _context.Products.Find(spec.FilterDefinition);
+
+        if (spec.OrderByExpression is not null)
+            query = query.SortBy(spec.OrderByExpression);
+        else if (spec.OrderByDescendingExpression is not null)
+            query = query.SortByDescending(spec.OrderByDescendingExpression);
+
+        if (spec.IsPagingEnabled)
+            query = query.Skip(spec.Skip).Limit(spec.Take);
+
+        var data = await query.ToListAsync(cancellationToken);
+
+        return new Pagination<Product>(spec.Skip / spec.Take + 1, spec.Take, totalCount, data);
     }
 
     public async Task<Product> GetProductByIdAsync(string id, CancellationToken cancellationToken = default)
