@@ -5,7 +5,6 @@ using Catalog.Infrastructure.Data.Contexts;
 using Catalog.Infrastructure.Repositories;
 using FluentValidation;
 using Microsoft.OpenApi;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
