@@ -2,6 +2,9 @@
   <Folder Name="/services/" />
   <Folder Name="/services/Basket/">
     <Project Path="services/Basket/Basket.Api/Basket.Api.csproj" Id="c395e983-cc81-4bde-91c7-fdf798f32309" />
+    <Project Path="services/Basket/Basket.Application/Basket.Application.csproj" />
+    <Project Path="services/Basket/Basket.Core/Basket.Core.csproj" />
+    <Project Path="services/Basket/Basket.Infrastructure/Basket.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/services/catalog/">
     <Project Path="services/catalog/Catalog.Api/Catalog.Api.csproj" />
