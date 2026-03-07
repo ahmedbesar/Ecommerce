@@ -5,19 +5,27 @@ namespace Basket.Api.Extensions;
 
 public static class ResultExtensions
 {
-    public static IResult ToHttpResponse<T>(this Result<T> result)
+    public static ActionResult ToHttpResponse<T>(this Result<T> result)
     {
         if (result.IsSuccess)
-            return Results.Ok(result.Value);
+            return new OkObjectResult(result.Value);
 
-        return Results.BadRequest(new { Errors = result.Errors.Select(e => e.Message) });
+        return CreateBadRequest(result.Errors);
     }
 
-    public static IResult ToHttpResponse(this Result result)
+    public static ActionResult ToHttpResponse(this Result result)
     {
         if (result.IsSuccess)
-            return Results.Ok();
+            return new OkResult();
 
-        return Results.BadRequest(new { Errors = result.Errors.Select(e => e.Message) });
+        return CreateBadRequest(result.Errors);
+    }
+
+    private static BadRequestObjectResult CreateBadRequest(IEnumerable<IError> errors)
+    {
+        return new BadRequestObjectResult(new
+        {
+            Errors = errors.Select(e => e.Message)
+        });
     }
 }

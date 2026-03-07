@@ -15,7 +15,7 @@ public class TypesController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<IResult> GetAll()
+    public async Task<ActionResult> GetAll()
     {
         var result = await _mediator.Send(new GetAllTypesQuery());
         return result.ToHttpResponse();

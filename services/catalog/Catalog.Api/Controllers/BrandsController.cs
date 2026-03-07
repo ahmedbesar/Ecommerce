@@ -15,7 +15,7 @@ public class BrandsController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<IResult> GetAll()
+    public async Task<ActionResult> GetAll()
     {
         var result = await _mediator.Send(new GetAllBrandsQuery());
         return result.ToHttpResponse();

@@ -18,49 +18,49 @@ public class ProductsController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<IResult> GetAll([FromQuery] ProductSpecificationParams specParams)
+    public async Task<ActionResult> GetAll([FromQuery] ProductSpecificationParams specParams)
     {
         var result = await _mediator.Send(new GetAllProductsQuery(specParams));
         return result.ToHttpResponse();
     }
 
     [HttpGet("{id}")]
-    public async Task<IResult> GetById(string id)
+    public async Task<ActionResult> GetById(string id)
     {
         var result = await _mediator.Send(new GetProductByIdQuery { Id = id });
         return result.ToHttpResponse();
     }
 
     [HttpGet("name/{name}")]
-    public async Task<IResult> GetByName(string name)
+    public async Task<ActionResult> GetByName(string name)
     {
         var result = await _mediator.Send(new GetProductByNameQuery { Name = name });
         return result.ToHttpResponse();
     }
 
     [HttpGet("brand/{brandName}")]
-    public async Task<IResult> GetByBrand(string brandName)
+    public async Task<ActionResult> GetByBrand(string brandName)
     {
         var result = await _mediator.Send(new GetProductsByBrandQuery { BrandName = brandName });
         return result.ToHttpResponse();
     }
 
     [HttpPost]
-    public async Task<IResult> Create([FromBody] CreateProductCommand command)
+    public async Task<ActionResult> Create([FromBody] CreateProductCommand command)
     {
         var result = await _mediator.Send(command);
         return result.ToHttpResponse();
     }
 
     [HttpPut]
-    public async Task<IResult> Update([FromBody] UpdateProductCommand command)
+    public async Task<ActionResult> Update([FromBody] UpdateProductCommand command)
     {
         var result = await _mediator.Send(command);
         return result.ToHttpResponse();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IResult> Delete(string id)
+    public async Task<ActionResult> Delete(string id)
     {
         var result = await _mediator.Send(new DeleteProductCommand { Id = id });
         return result.ToHttpResponse();
@@ -68,7 +68,7 @@ public class ProductsController : BaseApiController
 
     [HttpDelete]
     [Route("delete-all")]
-    public async Task<IResult> DeleteAll()
+    public async Task<ActionResult> DeleteAll()
     {
         var result = await _mediator.Send(new DeleteAllProductsCommand());
         return result.ToHttpResponse();

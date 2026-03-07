@@ -16,28 +16,28 @@ public class BasketController : BaseApiController
     }
 
     [HttpGet("{userName}")]
-    public async Task<IResult> GetBasket(string userName)
+    public async Task<ActionResult> GetBasket(string userName)
     {
         var result = await _mediator.Send(new GetBasketQuery { UserName = userName });
         return result.ToHttpResponse();
     }
 
     [HttpPost]
-    public async Task<IResult> CreateBasket([FromBody] CreateBasketCommand command)
+    public async Task<ActionResult> CreateBasket([FromBody] CreateBasketCommand command)
     {
         var result = await _mediator.Send(command);
         return result.ToHttpResponse();
     }
 
     [HttpPut]
-    public async Task<IResult> UpdateBasket([FromBody] UpdateBasketCommand command)
+    public async Task<ActionResult> UpdateBasket([FromBody] UpdateBasketCommand command)
     {
         var result = await _mediator.Send(command);
         return result.ToHttpResponse();
     }
 
     [HttpDelete("{userName}")]
-    public async Task<IResult> DeleteBasket(string userName)
+    public async Task<ActionResult> DeleteBasket(string userName)
     {
         var result = await _mediator.Send(new DeleteBasketCommand { UserName = userName });
         return result.ToHttpResponse();
