@@ -1,6 +1,6 @@
 using Discount.Application.Commands;
 using Discount.Application.Mappers;
-using Discount.Application.Responses;
+using Discount.Grpc.Protos;
 using Discount.Core.Entities;
 using Discount.Core.Repositories;
 using FluentResults;
@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Discount.Application.Handlers.Commands;
 
-public sealed class CreateDiscountCommandHandler : IRequestHandler<CreateDiscountCommand, Result<CouponResponseDto>>
+public sealed class CreateDiscountCommandHandler : IRequestHandler<CreateDiscountCommand, Result<CouponModel>>
 {
     private readonly IDiscountRepository _discountRepository;
     private readonly DiscountMapper _mapper;
@@ -19,7 +19,7 @@ public sealed class CreateDiscountCommandHandler : IRequestHandler<CreateDiscoun
         _mapper = mapper;
     }
 
-    public async Task<Result<CouponResponseDto>> Handle(CreateDiscountCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CouponModel>> Handle(CreateDiscountCommand request, CancellationToken cancellationToken)
     {
         var coupon = new Coupon
         {
@@ -33,7 +33,7 @@ public sealed class CreateDiscountCommandHandler : IRequestHandler<CreateDiscoun
         if (!created)
             return Result.Fail("Failed to create discount.");
 
-        var dto = _mapper.ToDto(coupon);
+        var dto = _mapper.ToModel(coupon);
         return Result.Ok(dto);
     }
 }

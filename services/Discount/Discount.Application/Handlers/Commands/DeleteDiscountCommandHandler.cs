@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Discount.Application.Handlers.Commands;
 
-public sealed class DeleteDiscountCommandHandler : IRequestHandler<DeleteDiscountCommand, Result<bool>>
+public sealed class DeleteDiscountCommandHandler : IRequestHandler<DeleteDiscountCommand, Result>
 {
     private readonly IDiscountRepository _discountRepository;
 
@@ -14,13 +14,13 @@ public sealed class DeleteDiscountCommandHandler : IRequestHandler<DeleteDiscoun
         _discountRepository = discountRepository;
     }
 
-    public async Task<Result<bool>> Handle(DeleteDiscountCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteDiscountCommand request, CancellationToken cancellationToken)
     {
         var deleted = await _discountRepository.DeleteDiscount(request.ProductName);
 
         if (!deleted)
             return Result.Fail("Failed to delete discount.");
 
-        return Result.Ok(true);
+        return Result.Ok();
     }
 }
