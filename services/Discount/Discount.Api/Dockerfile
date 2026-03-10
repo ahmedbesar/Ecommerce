@@ -12,6 +12,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["services/Discount/Discount.Api/Discount.Api.csproj", "services/Discount/Discount.Api/"]
+COPY ["services/Discount/Discount.Application/Discount.Application.csproj", "services/Discount/Discount.Application/"]
+COPY ["services/Discount/Discount.Core/Discount.Core.csproj", "services/Discount/Discount.Core/"]
+COPY ["services/Discount/Discount.Infrastructure/Discount.Infrastructure.csproj", "services/Discount/Discount.Infrastructure/"]
 RUN dotnet restore "./services/Discount/Discount.Api/Discount.Api.csproj"
 COPY . .
 WORKDIR "/src/services/Discount/Discount.Api"
