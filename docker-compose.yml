@@ -68,9 +68,9 @@ services:
      ports:
       - "5432:5432"
      volumes:
-      - discountdata:/var/lib/postgresql/data
+      - discountdata:/var/lib/postgresql
      healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d DiscountDb"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d DiscountDb"]
       interval: 10s
       timeout: 5s
       retries: 5
