@@ -11,7 +11,6 @@ namespace Ordering.Core.Repositories
         Task<IReadOnlyList<T>> GetAllAsync();
         Task<IReadOnlyList<T>> GetAllAsync(Expression<Func<T, bool>> predicate);
         Task<IReadOnlyList<T>> GetAllAsync(Func<System.Linq.IQueryable<T>, System.Linq.IOrderedQueryable<T>> orderBy = null,
-                                           string includeString = null,
                                            bool disableTracking = true);
         Task<IReadOnlyList<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null,
                                            Func<System.Linq.IQueryable<T>, System.Linq.IOrderedQueryable<T>> orderBy = null,

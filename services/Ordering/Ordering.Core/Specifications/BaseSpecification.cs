@@ -17,7 +17,7 @@ namespace Ordering.Core.Specifications
 
         public Expression<Func<T, bool>>? Criteria { get; private set; }
         public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
-        public List<string> IncludeStrings { get; } = new List<string>();
+
         public Expression<Func<T, object>>? OrderBy { get; private set; }
         public Expression<Func<T, object>>? OrderByDescending { get; private set; }
         public Expression<Func<T, object>>? GroupBy { get; private set; }
@@ -29,11 +29,6 @@ namespace Ordering.Core.Specifications
         protected virtual void AddInclude(Expression<Func<T, object>> includeExpression)
         {
             Includes.Add(includeExpression);
-        }
-
-        protected virtual void AddInclude(string includeString)
-        {
-            IncludeStrings.Add(includeString);
         }
 
         protected virtual void ApplyPaging(int skip, int take)
