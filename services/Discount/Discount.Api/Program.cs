@@ -17,6 +17,9 @@ builder.Services.AddGrpc();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// Swagger
+builder.Services.AddSwaggerGen();
+
 // MediatR for CQRS with Validation Behavior
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Discount.Application.Commands.CreateDiscountCommand).Assembly));
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -36,10 +39,9 @@ var app = builder.Build();
 await app.MigrateDatabaseAsync<Program>();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthorization();
 
