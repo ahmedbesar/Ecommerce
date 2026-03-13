@@ -40,6 +40,7 @@ services:
      environment:
       - ASPNETCORE_URLS=http://+:8001
       - CacheSettings__ConnectionString=redis:6379
+      - GrpcSettings__DiscountUrl=http://discount.api:5002
 
     redis:
      image: redis
@@ -92,7 +93,8 @@ services:
       context: .
       dockerfile: services/Discount/Discount.Api/Dockerfile
      ports:
-      - "8002:8080"
+      - "8002:8002"
+      - "5002:5002"
      depends_on:
        discountdb:
          condition: service_healthy
