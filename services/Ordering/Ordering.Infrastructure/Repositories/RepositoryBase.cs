@@ -19,28 +19,6 @@ namespace Ordering.Infrastructure.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<IReadOnlyList<T>> GetAllAsync()
-        {
-            return await _dbContext.Set<T>().ToListAsync();
-        }
-
-        public async Task<IReadOnlyList<T>> GetAllAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _dbContext.Set<T>().Where(predicate).ToListAsync();
-        }
-
-        public async Task<IReadOnlyList<T>> GetAllAsync(
-            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-            bool disableTracking = true)
-        {
-            IQueryable<T> query = _dbContext.Set<T>();
-
-            if (disableTracking) query = query.AsNoTracking();
-            if (orderBy != null) return await orderBy(query).ToListAsync();
-
-            return await query.ToListAsync();
-        }
-
         public async Task<IReadOnlyList<T>> GetAllAsync(
             Expression<Func<T, bool>>? predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
@@ -58,6 +36,13 @@ namespace Ordering.Infrastructure.Repositories
             if (orderBy != null) return await orderBy(query).ToListAsync();
 
             return await query.ToListAsync();
+        }
+
+        public async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null)
+        {
+            return predicate == null
+                ? await _dbContext.Set<T>().CountAsync()
+                : await _dbContext.Set<T>().Where(predicate).CountAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Ordering.Core.Specifications
@@ -51,6 +52,15 @@ namespace Ordering.Core.Specifications
         protected virtual void ApplyGroupBy(Expression<Func<T, object>> groupByExpression)
         {
             GroupBy = groupByExpression;
+        }
+
+        public Func<IQueryable<T>, IOrderedQueryable<T>>? GetOrderBy()
+        {
+            if (OrderBy != null)
+                return q => q.OrderBy(OrderBy);
+            if (OrderByDescending != null)
+                return q => q.OrderByDescending(OrderByDescending);
+            return null;
         }
     }
 }
