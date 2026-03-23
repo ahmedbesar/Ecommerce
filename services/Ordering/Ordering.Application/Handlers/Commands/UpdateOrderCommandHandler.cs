@@ -2,13 +2,7 @@ using MediatR;
 using FluentResults;
 using Ordering.Application.Commands;
 using Ordering.Application.Mappers;
-using FluentResults;
-using Ordering.Application.Exceptions;
-using Ordering.Core.Entities;
 using Ordering.Core.Repositories;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Ordering.Application.Handlers.Commands
 {
@@ -19,8 +13,8 @@ namespace Ordering.Application.Handlers.Commands
 
         public UpdateOrderCommandHandler(IOrderRepository orderRepository, OrderMapper mapper)
         {
-            _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _orderRepository = orderRepository;
+            _mapper = mapper;
         }
 
         public async Task<Result> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)

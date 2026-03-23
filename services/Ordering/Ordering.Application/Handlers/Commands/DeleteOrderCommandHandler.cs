@@ -1,12 +1,7 @@
 using MediatR;
 using FluentResults;
 using Ordering.Application.Commands;
-using Ordering.Application.Exceptions;
-using Ordering.Core.Entities;
 using Ordering.Core.Repositories;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Ordering.Application.Handlers.Commands
 {
@@ -16,7 +11,7 @@ namespace Ordering.Application.Handlers.Commands
 
         public DeleteOrderCommandHandler(IOrderRepository orderRepository)
         {
-            _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+            _orderRepository = orderRepository;
         }
 
         public async Task<Result> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
