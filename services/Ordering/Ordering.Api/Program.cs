@@ -7,6 +7,7 @@ using Ordering.Application.Extensions;
 using Ordering.Infrastructure.Data;
 using Ordering.Infrastructure.Extensions;
 using System.Threading.Tasks;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
+
+// Swagger Configuration
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Ordering API",
+        Version = "v1",
+        Description = "This is API for Ordering microservice in ecommerce application",
+        Contact = new OpenApiContact
+        {
+            Name = "Ahmed Besar",
+            Email = "besarahmed89@gmail.com",
+            Url = new Uri("https://yourwebsite.eg")
+        }
+    });
+});
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
@@ -25,6 +43,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthorization();
 
