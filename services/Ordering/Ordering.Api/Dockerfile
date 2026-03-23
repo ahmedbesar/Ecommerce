@@ -11,19 +11,22 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["services/Ordering/Ordering/Ordering.csproj", "services/Ordering/Ordering/"]
-RUN dotnet restore "./services/Ordering/Ordering/Ordering.csproj"
+COPY ["services/Ordering/Ordering.Api/Ordering.Api.csproj", "services/Ordering/Ordering.Api/"]
+COPY ["services/Ordering/Ordering.Application/Ordering.Application.csproj", "services/Ordering/Ordering.Application/"]
+COPY ["services/Ordering/Ordering.Core/Ordering.Core.csproj", "services/Ordering/Ordering.Core/"]
+COPY ["services/Ordering/Ordering.Infrastructure/Ordering.Infrastructure.csproj", "services/Ordering/Ordering.Infrastructure/"]
+RUN dotnet restore "./services/Ordering/Ordering.Api/Ordering.Api.csproj"
 COPY . .
-WORKDIR "/src/services/Ordering/Ordering"
-RUN dotnet build "./Ordering.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/services/Ordering/Ordering.Api"
+RUN dotnet build "./Ordering.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Ordering.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Ordering.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Ordering.dll"]
+ENTRYPOINT ["dotnet", "Ordering.Api.dll"]

@@ -101,8 +101,42 @@ services:
      environment:
       - DatabaseSettings__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=postgres;Password=postgres;
 
+    ordering.api:
+     image: ${DOCKER_REGISTRY-}orderingapi
+     build:
+      context: .
+      dockerfile: services/Ordering/Ordering.Api/Dockerfile
+     ports:
+      - "8003:8003"
+     depends_on:
+       orderdb:
+         condition: service_healthy
+     extra_hosts:
+      - "host.docker.internal:host-gateway"
+     environment:
+      - ASPNETCORE_URLS=http://+:8003
+      - ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=orderDB;User Id=sa;Password=Order@Pass123;TrustServerCertificate=True;
+
+    orderdb:
+     image: mcr.microsoft.com/mssql/server:2022-latest
+     container_name: orderdb
+     environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Order@Pass123
+     restart: always
+     ports:
+      - "1433:1433"
+     volumes:
+      - orderdata:/var/opt/mssql
+     healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools*/bin/sqlcmd -S localhost -U sa -P Order@Pass123 -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
  catalogdata:
  portainer_data:
  discountdata:
  pgadmin_data:
+ orderdata:
