@@ -55,7 +55,7 @@ public class BasketController : BaseApiController
         var basket = basketResult.Value;
 
         var eventMsg = _mapper.Map(basketCheckout);
-        eventMsg.TotalPrice = basket.TotalPrice;
+        eventMsg.TotalPrice = basketCheckout.TotalPrice;
         await _publishEndpoint.Publish(eventMsg);
 
         _logger.LogInformation($"Basket Published for {basket.UserName}");
