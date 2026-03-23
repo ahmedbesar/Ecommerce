@@ -8,6 +8,7 @@ using Discount.Grpc.Protos;
 using FluentValidation;
 using Microsoft.OpenApi;
 using StackExchange.Redis;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +64,15 @@ builder.Services.AddValidatorsFromAssembly(typeof(Basket.Application.Commands.Cr
 // MediatR for CQRS with Validation Behavior
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Basket.Application.Commands.CreateBasketCommand).Assembly));
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+// MassTransit config
+builder.Services.AddMassTransit(config =>
+{
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+    });
+});
 
 var app = builder.Build();
 

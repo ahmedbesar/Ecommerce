@@ -35,12 +35,14 @@ services:
       - "8001:8001"
      depends_on:
       - redis
+      - rabbitmq
      extra_hosts:
       - "host.docker.internal:host-gateway"
      environment:
       - ASPNETCORE_URLS=http://+:8001
       - CacheSettings__ConnectionString=redis:6379
       - GrpcSettings__DiscountUrl=http://discount.api:5002
+      - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
 
     redis:
      image: redis
@@ -111,11 +113,14 @@ services:
      depends_on:
        orderdb:
          condition: service_healthy
+       rabbitmq:
+         condition: service_started
      extra_hosts:
       - "host.docker.internal:host-gateway"
      environment:
       - ASPNETCORE_URLS=http://+:8003
       - ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=orderDB;User Id=sa;Password=Order@Pass123;TrustServerCertificate=True;
+      - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
 
     orderdb:
      image: mcr.microsoft.com/mssql/server:2022-latest
@@ -134,9 +139,19 @@ services:
       timeout: 5s
       retries: 5
 
+    rabbitmq:
+     image: rabbitmq:3-management-alpine
+     container_name: rabbitmq
+     ports:
+      - "5672:5672"
+      - "15672:15672"
+     volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
  catalogdata:
  portainer_data:
  discountdata:
  pgadmin_data:
  orderdata:
+ rabbitmq_data:
