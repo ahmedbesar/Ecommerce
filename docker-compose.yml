@@ -17,6 +17,7 @@ services:
       - DatabaseSettings__CollectionName=Products
       - DatabaseSettings__BrandsCollection=ProductBrands
       - DatabaseSettings__TypesCollection=ProductTypes
+      - ElasticConfiguration__Uri=http://elasticsearch:9200
 
     catalogdb:
      image: mongo
@@ -43,6 +44,7 @@ services:
       - CacheSettings__ConnectionString=redis:6379
       - GrpcSettings__DiscountUrl=http://discount.api:5002
       - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
+      - ElasticConfiguration__Uri=http://elasticsearch:9200
 
     redis:
      image: redis
@@ -102,6 +104,7 @@ services:
          condition: service_healthy
      environment:
       - DatabaseSettings__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=postgres;Password=postgres;
+      - ElasticConfiguration__Uri=http://elasticsearch:9200
 
     ordering.api:
      image: ${DOCKER_REGISTRY-}orderingapi
@@ -121,6 +124,7 @@ services:
       - ASPNETCORE_URLS=http://+:8003
       - ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=orderDB;User Id=sa;Password=Order@Pass123;TrustServerCertificate=True;
       - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
+      - ElasticConfiguration__Uri=http://elasticsearch:9200
 
     orderdb:
      image: mcr.microsoft.com/mssql/server:2022-latest
@@ -148,6 +152,28 @@ services:
      volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
+    elasticsearch:
+     image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+     container_name: elasticsearch
+     environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+     ports:
+      - "9200:9200"
+     volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+
+    kibana:
+     image: docker.elastic.co/kibana/kibana:8.14.3
+     container_name: kibana
+     environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+     depends_on:
+      - elasticsearch
+     ports:
+      - "5601:5601"
+
 volumes:
  catalogdata:
  portainer_data:
@@ -155,3 +181,4 @@ volumes:
  pgadmin_data:
  orderdata:
  rabbitmq_data:
+ elasticsearch-data:
