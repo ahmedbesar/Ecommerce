@@ -51,6 +51,8 @@ builder.Services.AddValidatorsFromAssembly(typeof(Catalog.Application.Commands.C
 
 // MediatR for CQRS with Validation Behavior
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Catalog.Application.Commands.CreateProductCommand).Assembly));
+builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
+builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
