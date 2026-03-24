@@ -11,8 +11,10 @@ using Microsoft.OpenApi;
 using MassTransit;
 using Ordering.Application.Consumers;
 using EventBus.Messages.Common;
+using Common.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureCommonLogging();
 
 // Add services to the container.
 builder.Services.AddControllers();

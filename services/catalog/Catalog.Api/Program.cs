@@ -3,10 +3,12 @@ using Catalog.Application.Mappers;
 using Catalog.Core.Interfaces;
 using Catalog.Infrastructure.Data.Contexts;
 using Catalog.Infrastructure.Repositories;
+using Common.Logging;
 using FluentValidation;
 using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureCommonLogging();
 
 // Add services to the container.
 builder.Services.AddControllers();

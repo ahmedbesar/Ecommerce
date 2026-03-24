@@ -8,8 +8,10 @@ using Discount.Infrastructure.Repositories;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Common.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureCommonLogging();
 
 // Add services to the container.
 builder.Services.AddControllers();

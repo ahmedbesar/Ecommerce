@@ -9,8 +9,10 @@ using FluentValidation;
 using Microsoft.OpenApi;
 using StackExchange.Redis;
 using MassTransit;
+using Common.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureCommonLogging();
 
 // Add services to the container.
 builder.Services.AddControllers();
