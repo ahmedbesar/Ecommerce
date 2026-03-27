@@ -174,6 +174,22 @@ services:
      ports:
       - "5601:5601"
 
+    ocelot.apigateway:
+     image: ${DOCKER_REGISTRY-}ocelotapigateway
+     build:
+      context: .
+      dockerfile: ApiGateway/Ocelot.ApiGateway/Dockerfile
+     ports:
+      - "8010:8010"
+     depends_on:
+      - catalog.api
+      - basket.api
+      - ordering.api
+     extra_hosts:
+      - "host.docker.internal:host-gateway"
+     environment:
+      - ASPNETCORE_URLS=http://+:8010
+
 volumes:
  catalogdata:
  portainer_data:
