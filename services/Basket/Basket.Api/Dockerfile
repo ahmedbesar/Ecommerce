@@ -1,4 +1,4 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+﻿# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
@@ -16,6 +16,7 @@ COPY ["services/Basket/Basket.Application/Basket.Application.csproj", "services/
 COPY ["services/Basket/Basket.Core/Basket.Core.csproj", "services/Basket/Basket.Core/"]
 COPY ["services/Basket/Basket.Infrastructure/Basket.Infrastructure.csproj", "services/Basket/Basket.Infrastructure/"]
 COPY ["Infrastructure/Common.Logging/Common.Logging.csproj", "Infrastructure/Common.Logging/"]
+COPY ["Infrastructure/Common.Authentication/Common.Authentication.csproj", "Infrastructure/Common.Authentication/"]
 COPY ["Infrastructure/EventBus.Messages/EventBus.Messages.csproj", "Infrastructure/EventBus.Messages/"]
 RUN dotnet restore "./services/Basket/Basket.Api/Basket.Api.csproj"
 COPY . .

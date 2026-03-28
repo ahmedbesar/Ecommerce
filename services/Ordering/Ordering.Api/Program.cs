@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,16 +12,16 @@ using MassTransit;
 using Ordering.Application.Consumers;
 using EventBus.Messages.Common;
 using Common.Logging;
+using Common.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureCommonLogging();
 
-// Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddEcommerceJwtBearer(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
-// Swagger Configuration
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -36,12 +36,19 @@ builder.Services.AddSwaggerGen(options =>
             Url = new Uri("https://yourwebsite.eg")
         }
     });
+    options.AddSecurityDefinition(AuthenticationExtensions.BearerScheme, new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+    });
 });
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 
-// MassTransit config
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<BasketCheckoutConsumer>();
@@ -59,7 +66,6 @@ builder.Services.AddMassTransit(config =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -68,11 +74,11 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// Apply DB Migration and Seed Data
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<OrderContext>();

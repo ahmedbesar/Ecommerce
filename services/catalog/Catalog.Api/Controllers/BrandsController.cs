@@ -1,10 +1,12 @@
-using Catalog.Api.Extensions;
+﻿using Catalog.Api.Extensions;
 using Catalog.Application.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Controllers;
 
+[AllowAnonymous]
 public class BrandsController : BaseApiController
 {
     private readonly IMediator _mediator;

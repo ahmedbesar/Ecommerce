@@ -1,4 +1,4 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+﻿# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
@@ -16,6 +16,7 @@ COPY ["services/catalog/Catalog.Application/Catalog.Application.csproj", "servic
 COPY ["services/catalog/Catalog.Core/Catalog.Core.csproj", "services/catalog/Catalog.Core/"]
 COPY ["services/catalog/Catalog.Infrastructure/Catalog.Infrastructure.csproj", "services/catalog/Catalog.Infrastructure/"]
 COPY ["Infrastructure/Common.Logging/Common.Logging.csproj", "Infrastructure/Common.Logging/"]
+COPY ["Infrastructure/Common.Authentication/Common.Authentication.csproj", "Infrastructure/Common.Authentication/"]
 COPY services/catalog/Catalog.Infrastructure/Data/SeedData /src/services/catalog/Catalog.Infrastructure/Data/SeedData
 RUN dotnet restore "./services/catalog/Catalog.Api/Catalog.Api.csproj"
 COPY . .

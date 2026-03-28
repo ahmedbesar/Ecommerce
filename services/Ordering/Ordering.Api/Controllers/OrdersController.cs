@@ -1,4 +1,6 @@
+﻿using System;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Api.Extensions;
@@ -12,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace Ordering.Api.Controllers
 {
+    [Authorize]
     public class OrdersController : ApiController
     {
         private readonly IMediator _mediator;
@@ -24,6 +27,9 @@ namespace Ordering.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> GetOrders([FromQuery] OrderSpecificationParams specParams)
         {
+            if (!User.IsInRole("Admin"))
+                specParams.UserName = User.Identity?.Name;
+
             var query = new GetOrdersQuery(specParams);
             var result = await _mediator.Send(query);
             return result.ToHttpResponse();
@@ -32,6 +38,10 @@ namespace Ordering.Api.Controllers
         [HttpGet("{userName}", Name = "GetOrdersByUserName")]
         public async Task<ActionResult> GetOrdersByUserName(string userName)
         {
+            if (!User.IsInRole("Admin") &&
+                !string.Equals(userName, User.Identity?.Name, StringComparison.Ordinal))
+                return Forbid();
+
             var query = new GetOrdersByUserNameQuery(userName);
             var result = await _mediator.Send(query);
             return result.ToHttpResponse();
@@ -40,10 +50,15 @@ namespace Ordering.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateOrder([FromBody] CreateOrderCommand command)
         {
+            if (!User.IsInRole("Admin") &&
+                !string.Equals(command.UserName, User.Identity?.Name, StringComparison.Ordinal))
+                return Forbid();
+
             var result = await _mediator.Send(command);
             return result.ToHttpResponse();
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPut]
         public async Task<ActionResult> UpdateOrder([FromBody] UpdateOrderCommand command)
         {
@@ -51,6 +66,7 @@ namespace Ordering.Api.Controllers
             return result.ToHttpResponse();
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteOrder(int id)
         {

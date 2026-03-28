@@ -1,18 +1,22 @@
+﻿using Common.Authentication;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add Ocelot configuration
 builder.Configuration.AddJsonFile($"ocelot.{builder.Environment.EnvironmentName}.json", true, true);
 builder.Configuration.AddJsonFile("ocelot.json", false, true);
 
-// Add Ocelot services
 builder.Services.AddOcelot(builder.Configuration);
+builder.Services.AddEcommerceJwtBearer(builder.Configuration);
 
 var app = builder.Build();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseEndpoints(endpoints =>
 {
     _ = endpoints.MapGet("/", async context =>
@@ -21,7 +25,6 @@ app.UseEndpoints(endpoints =>
     });
 });
 
-// Use Ocelot middleware
 await app.UseOcelot();
 
 app.Run();

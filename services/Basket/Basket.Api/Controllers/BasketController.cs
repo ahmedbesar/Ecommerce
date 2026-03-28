@@ -1,3 +1,4 @@
+﻿using System.Security.Claims;
 using Basket.Api.Extensions;
 using Basket.Application.Commands;
 using Basket.Application.Mappers;
@@ -6,11 +7,13 @@ using Basket.Core.Entities;
 using EventBus.Messages.Events;
 using MassTransit;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Basket.Api.Controllers;
 
+[Authorize]
 public class BasketController : BaseApiController
 {
     private readonly IMediator _mediator;
@@ -26,9 +29,21 @@ public class BasketController : BaseApiController
         _logger = logger;
     }
 
+    private string? CurrentUserName =>
+        User.FindFirst(ClaimTypes.Name)?.Value ?? User.Identity?.Name;
+
+    private IActionResult? ForbidUnlessSelfOrAdmin(string userName)
+    {
+        if (User.IsInRole("Admin")) return null;
+        if (!string.Equals(CurrentUserName, userName, StringComparison.Ordinal))
+            return Forbid();
+        return null;
+    }
+
     [HttpGet("{userName}")]
     public async Task<ActionResult> GetBasket(string userName)
     {
+        if (ForbidUnlessSelfOrAdmin(userName) is { } denied) return (ActionResult)denied;
         var result = await _mediator.Send(new GetBasketQuery { UserName = userName });
         return result.ToHttpResponse();
     }
@@ -36,6 +51,7 @@ public class BasketController : BaseApiController
     [HttpPost]
     public async Task<ActionResult> CreateBasket([FromBody] CreateBasketCommand command)
     {
+        if (ForbidUnlessSelfOrAdmin(command.UserName) is { } denied) return (ActionResult)denied;
         var result = await _mediator.Send(command);
         return result.ToHttpResponse();
     }
@@ -43,7 +59,8 @@ public class BasketController : BaseApiController
     [HttpPost("checkout")]
     public async Task<IActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
     {
-        //get basket by user name
+        if (ForbidUnlessSelfOrAdmin(basketCheckout.UserName) is { } denied) return (ActionResult)denied;
+
         var query = new GetBasketQuery { UserName = basketCheckout.UserName };
         var basketResult = await _mediator.Send(query);
 
@@ -59,8 +76,7 @@ public class BasketController : BaseApiController
         await _publishEndpoint.Publish(eventMsg);
 
         _logger.LogInformation($"Basket Published for {basket.UserName}");
-        
-        //remove from basket
+
         var deletedcmd = new DeleteBasketCommand { UserName = basketCheckout.UserName };
         await _mediator.Send(deletedcmd);
         return Accepted();
@@ -69,6 +85,7 @@ public class BasketController : BaseApiController
     [HttpPut]
     public async Task<ActionResult> UpdateBasket([FromBody] UpdateBasketCommand command)
     {
+        if (ForbidUnlessSelfOrAdmin(command.UserName) is { } denied) return (ActionResult)denied;
         var result = await _mediator.Send(command);
         return result.ToHttpResponse();
     }
@@ -76,7 +93,9 @@ public class BasketController : BaseApiController
     [HttpDelete("{userName}")]
     public async Task<ActionResult> DeleteBasket(string userName)
     {
+        if (ForbidUnlessSelfOrAdmin(userName) is { } denied) return (ActionResult)denied;
         var result = await _mediator.Send(new DeleteBasketCommand { UserName = userName });
         return result.ToHttpResponse();
     }
 }
+

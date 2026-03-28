@@ -1,8 +1,9 @@
-using Catalog.Application.Behaviors;
+﻿using Catalog.Application.Behaviors;
 using Catalog.Application.Mappers;
 using Catalog.Core.Interfaces;
 using Catalog.Infrastructure.Data.Contexts;
 using Catalog.Infrastructure.Repositories;
+using Common.Authentication;
 using Common.Logging;
 using FluentValidation;
 using Microsoft.OpenApi;
@@ -10,13 +11,11 @@ using Microsoft.OpenApi;
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureCommonLogging();
 
-// Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddEcommerceJwtBearer(builder.Configuration);
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// Swagger Configuration
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -31,25 +30,28 @@ builder.Services.AddSwaggerGen(options =>
             Url = new Uri("https://yourwebsite.eg")
         }
     });
+    options.AddSecurityDefinition(AuthenticationExtensions.BearerScheme, new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+    });
 });
 
-// MongoDB Context
 builder.Services.AddSingleton<ICatalogContext, CatalogContext>();
 
-// Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ITypeRepository, TypeRepository>();
 
-// Mappers
 builder.Services.AddSingleton<ProductMapper>();
 builder.Services.AddSingleton<BrandMapper>();
 builder.Services.AddSingleton<TypeMapper>();
 
-// FluentValidation
 builder.Services.AddValidatorsFromAssembly(typeof(Catalog.Application.Commands.CreateProductCommand).Assembly);
 
-// MediatR for CQRS with Validation Behavior
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Catalog.Application.Commands.CreateProductCommand).Assembly));
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
@@ -57,7 +59,6 @@ builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(Valid
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -65,6 +66,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

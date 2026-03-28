@@ -1,9 +1,10 @@
-using Catalog.Api.Extensions;
+﻿using Catalog.Api.Extensions;
 using Catalog.Application.Commands;
 using Catalog.Application.Queries;
 using Catalog.Core.Specifications;
 using Catalog.Core.Specifications.Products;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Controllers;
@@ -17,6 +18,7 @@ public class ProductsController : BaseApiController
         _mediator = mediator;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult> GetAll([FromQuery] ProductSpecificationParams specParams)
     {
@@ -24,6 +26,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult> GetById(string id)
     {
@@ -31,6 +34,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
+    [AllowAnonymous]
     [HttpGet("name/{name}")]
     public async Task<ActionResult> GetByName(string name)
     {
@@ -38,6 +42,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
+    [AllowAnonymous]
     [HttpGet("brand/{brandName}")]
     public async Task<ActionResult> GetByBrand(string brandName)
     {
@@ -45,6 +50,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
+    [Authorize(Policy = "Admin")]
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] CreateProductCommand command)
     {
@@ -52,6 +58,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
+    [Authorize(Policy = "Admin")]
     [HttpPut]
     public async Task<ActionResult> Update([FromBody] UpdateProductCommand command)
     {
@@ -59,6 +66,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
+    [Authorize(Policy = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(string id)
     {
@@ -66,6 +74,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
+    [Authorize(Policy = "Admin")]
     [HttpDelete]
     [Route("delete-all")]
     public async Task<ActionResult> DeleteAll()
