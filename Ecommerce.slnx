@@ -3,9 +3,14 @@
     <Project Path="ApiGateway/Ocelot.ApiGateway/Ocelot.ApiGateway.csproj" Id="4fbf40a0-8744-4ff7-94c2-f797af596dfd" />
   </Folder>
   <Folder Name="/Infrastructure/">
+    <Project Path="Infrastructure/Common.Authentication/Common.Authentication.csproj" />
+    <Project Path="Infrastructure/Common.Logging/Common.Logging.csproj" />
     <Project Path="Infrastructure/EventBus.Messages/EventBus.Messages.csproj" Id="d0857f6c-66d8-41f8-95eb-1c6a79da2947" />
   </Folder>
   <Folder Name="/services/" />
+  <Folder Name="/services/Identity/">
+    <Project Path="services/Identity/Identity.Api/Identity.Api.csproj" />
+  </Folder>
   <Folder Name="/services/Basket/">
     <Project Path="services/Basket/Basket.Api/Basket.Api.csproj" Id="c395e983-cc81-4bde-91c7-fdf798f32309" />
     <Project Path="services/Basket/Basket.Application/Basket.Application.csproj" />
