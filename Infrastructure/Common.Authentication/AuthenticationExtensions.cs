@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Common.Authentication.Policies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -33,9 +34,16 @@ public static class AuthenticationExtensions
                 };
             });
 
+        var policies = new List<IAuthorizationPolicy>
+        {
+            new AdminPolicy(),
+            new SelfUserOrAdminPolicy(),
+        };
+
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+            foreach (var policy in policies)
+                options.AddPolicy(policy.PolicyName, builder => policy.Apply(builder));
         });
 
         return services;

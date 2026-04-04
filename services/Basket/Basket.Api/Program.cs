@@ -1,4 +1,4 @@
-﻿using Basket.Application.Behaviors;
+using Basket.Application.Behaviors;
 using Basket.Application.GrpcServices;
 using Basket.Application.Mappers;
 using Basket.Core.Interfaces;

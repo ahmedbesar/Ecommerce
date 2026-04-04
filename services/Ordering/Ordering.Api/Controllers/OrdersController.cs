@@ -1,7 +1,6 @@
-﻿using System;
+using Common.Authentication.Consts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Api.Extensions;
 using Ordering.Application.Responses;
@@ -9,7 +8,6 @@ using Ordering.Application.Commands;
 using Ordering.Application.Queries;
 using Ordering.Core.Specifications;
 using Ordering.Core.Specifications.Orders;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Ordering.Api.Controllers
@@ -18,16 +16,18 @@ namespace Ordering.Api.Controllers
     public class OrdersController : ApiController
     {
         private readonly IMediator _mediator;
+        private readonly IAuthorizationService _authorizationService;
 
-        public OrdersController(IMediator mediator)
+        public OrdersController(IMediator mediator, IAuthorizationService authorizationService)
         {
             _mediator = mediator;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetOrders([FromQuery] OrderSpecificationParams specParams)
         {
-            if (!User.IsInRole("Admin"))
+            if (!User.IsInRole(RolesConsts.Admin))
                 specParams.UserName = User.Identity?.Name;
 
             var query = new GetOrdersQuery(specParams);
@@ -38,8 +38,7 @@ namespace Ordering.Api.Controllers
         [HttpGet("{userName}", Name = "GetOrdersByUserName")]
         public async Task<ActionResult> GetOrdersByUserName(string userName)
         {
-            if (!User.IsInRole("Admin") &&
-                !string.Equals(userName, User.Identity?.Name, StringComparison.Ordinal))
+            if (!(await _authorizationService.AuthorizeAsync(User, userName, AppPoliciesConsts.SelfUserOrAdmin)).Succeeded)
                 return Forbid();
 
             var query = new GetOrdersByUserNameQuery(userName);
@@ -50,15 +49,14 @@ namespace Ordering.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateOrder([FromBody] CreateOrderCommand command)
         {
-            if (!User.IsInRole("Admin") &&
-                !string.Equals(command.UserName, User.Identity?.Name, StringComparison.Ordinal))
+            if (!(await _authorizationService.AuthorizeAsync(User, command.UserName, AppPoliciesConsts.SelfUserOrAdmin)).Succeeded)
                 return Forbid();
 
             var result = await _mediator.Send(command);
             return result.ToHttpResponse();
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = AppPoliciesConsts.Admin)]
         [HttpPut]
         public async Task<ActionResult> UpdateOrder([FromBody] UpdateOrderCommand command)
         {
@@ -66,7 +64,7 @@ namespace Ordering.Api.Controllers
             return result.ToHttpResponse();
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = AppPoliciesConsts.Admin)]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteOrder(int id)
         {

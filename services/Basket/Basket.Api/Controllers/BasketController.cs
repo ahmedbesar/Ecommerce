@@ -1,9 +1,11 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Basket.Api.Extensions;
 using Basket.Application.Commands;
 using Basket.Application.Mappers;
 using Basket.Application.Queries;
 using Basket.Core.Entities;
+using Common.Authentication;
+using Common.Authentication.Consts;
 using EventBus.Messages.Events;
 using MassTransit;
 using MediatR;
@@ -20,30 +22,21 @@ public class BasketController : BaseApiController
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly BasketMapper _mapper;
     private readonly ILogger<BasketController> _logger;
+    private readonly IAuthorizationService _authorizationService;
 
-    public BasketController(IMediator mediator, IPublishEndpoint publishEndpoint, BasketMapper mapper, ILogger<BasketController> logger)
+    public BasketController(IMediator mediator, IPublishEndpoint publishEndpoint, BasketMapper mapper, ILogger<BasketController> logger, IAuthorizationService authorizationService)
     {
         _mediator = mediator;
         _publishEndpoint = publishEndpoint;
         _mapper = mapper;
         _logger = logger;
-    }
-
-    private string? CurrentUserName =>
-        User.FindFirst(ClaimTypes.Name)?.Value ?? User.Identity?.Name;
-
-    private IActionResult? ForbidUnlessSelfOrAdmin(string userName)
-    {
-        if (User.IsInRole("Admin")) return null;
-        if (!string.Equals(CurrentUserName, userName, StringComparison.Ordinal))
-            return Forbid();
-        return null;
+        _authorizationService = authorizationService;
     }
 
     [HttpGet("{userName}")]
     public async Task<ActionResult> GetBasket(string userName)
     {
-        if (ForbidUnlessSelfOrAdmin(userName) is { } denied) return (ActionResult)denied;
+        if (!(await _authorizationService.AuthorizeAsync(User, userName, AppPoliciesConsts.SelfUserOrAdmin)).Succeeded) return Forbid();
         var result = await _mediator.Send(new GetBasketQuery { UserName = userName });
         return result.ToHttpResponse();
     }
@@ -51,7 +44,7 @@ public class BasketController : BaseApiController
     [HttpPost]
     public async Task<ActionResult> CreateBasket([FromBody] CreateBasketCommand command)
     {
-        if (ForbidUnlessSelfOrAdmin(command.UserName) is { } denied) return (ActionResult)denied;
+        if (!(await _authorizationService.AuthorizeAsync(User, command.UserName, AppPoliciesConsts.SelfUserOrAdmin)).Succeeded) return Forbid();
         var result = await _mediator.Send(command);
         return result.ToHttpResponse();
     }
@@ -59,7 +52,7 @@ public class BasketController : BaseApiController
     [HttpPost("checkout")]
     public async Task<IActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
     {
-        if (ForbidUnlessSelfOrAdmin(basketCheckout.UserName) is { } denied) return (ActionResult)denied;
+        if (!(await _authorizationService.AuthorizeAsync(User, basketCheckout.UserName, AppPoliciesConsts.SelfUserOrAdmin)).Succeeded) return Forbid();
 
         var query = new GetBasketQuery { UserName = basketCheckout.UserName };
         var basketResult = await _mediator.Send(query);
@@ -85,7 +78,7 @@ public class BasketController : BaseApiController
     [HttpPut]
     public async Task<ActionResult> UpdateBasket([FromBody] UpdateBasketCommand command)
     {
-        if (ForbidUnlessSelfOrAdmin(command.UserName) is { } denied) return (ActionResult)denied;
+        if (!(await _authorizationService.AuthorizeAsync(User, command.UserName, AppPoliciesConsts.SelfUserOrAdmin)).Succeeded) return Forbid();
         var result = await _mediator.Send(command);
         return result.ToHttpResponse();
     }
@@ -93,7 +86,7 @@ public class BasketController : BaseApiController
     [HttpDelete("{userName}")]
     public async Task<ActionResult> DeleteBasket(string userName)
     {
-        if (ForbidUnlessSelfOrAdmin(userName) is { } denied) return (ActionResult)denied;
+        if (!(await _authorizationService.AuthorizeAsync(User, userName, AppPoliciesConsts.SelfUserOrAdmin)).Succeeded) return Forbid();
         var result = await _mediator.Send(new DeleteBasketCommand { UserName = userName });
         return result.ToHttpResponse();
     }

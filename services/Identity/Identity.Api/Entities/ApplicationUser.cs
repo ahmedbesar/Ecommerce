@@ -1,5 +1,7 @@
-﻿namespace Identity.Api.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class ApplicationUser : Microsoft.AspNetCore.Identity.IdentityUser
+namespace Identity.Api.Entities;
+
+public class ApplicationUser : IdentityUser
 {
 }

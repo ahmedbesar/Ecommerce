@@ -1,8 +1,10 @@
-﻿using Catalog.Api.Extensions;
+using Catalog.Api.Extensions;
 using Catalog.Application.Commands;
 using Catalog.Application.Queries;
 using Catalog.Core.Specifications;
 using Catalog.Core.Specifications.Products;
+using Common.Authentication;
+using Common.Authentication.Consts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +52,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = AppPoliciesConsts.Admin)]
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] CreateProductCommand command)
     {
@@ -58,7 +60,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = AppPoliciesConsts.Admin)]
     [HttpPut]
     public async Task<ActionResult> Update([FromBody] UpdateProductCommand command)
     {
@@ -66,7 +68,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = AppPoliciesConsts.Admin)]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(string id)
     {
@@ -74,7 +76,7 @@ public class ProductsController : BaseApiController
         return result.ToHttpResponse();
     }
 
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = AppPoliciesConsts.Admin)]
     [HttpDelete]
     [Route("delete-all")]
     public async Task<ActionResult> DeleteAll()
