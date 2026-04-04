@@ -1,4 +1,4 @@
-﻿using Common.Logging;
+using Common.Logging;
 using Identity.Api.Data;
 using Identity.Api.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -64,7 +64,8 @@ builder.Services.AddOpenIddict()
             .AddDevelopmentSigningCertificate();
 
         options.UseAspNetCore()
-            .EnableTokenEndpointPassthrough();
+            .EnableTokenEndpointPassthrough()
+            .DisableTransportSecurityRequirement();
     });
 
 builder.Services.AddControllers();

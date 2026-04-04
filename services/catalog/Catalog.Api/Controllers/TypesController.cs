@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Controllers;
 
-[AllowAnonymous]
 public class TypesController : BaseApiController
 {
     private readonly IMediator _mediator;

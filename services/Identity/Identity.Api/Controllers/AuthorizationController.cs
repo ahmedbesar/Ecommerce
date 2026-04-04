@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore;
 using System.Security.Claims;
 using Identity.Api.Entities;
 using Microsoft.AspNetCore.Authentication;
@@ -11,7 +11,6 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Identity.Api.Controllers;
 
-[ApiExplorerSettings(GroupName = "identity")]
 public class AuthorizationController : ControllerBase
 {
     private readonly IOpenIddictScopeManager _scopeManager;
