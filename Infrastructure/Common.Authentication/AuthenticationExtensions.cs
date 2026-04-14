@@ -31,6 +31,7 @@ public static class AuthenticationExtensions
                     NameClaimType = OpenIddictConstants.Claims.Name,
                     RoleClaimType = OpenIddictConstants.Claims.Role,
                     ValidateAudience = !string.IsNullOrEmpty(audience),
+                    ClockSkew = TimeSpan.Zero // <--- Removes the default 5-minute grace period
                 };
             });
 
