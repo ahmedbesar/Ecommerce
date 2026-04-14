@@ -56,7 +56,9 @@ builder.Services.AddOpenIddict()
 
         options.AllowRefreshTokenFlow();
 
-        options.SetAccessTokenLifetime(TimeSpan.FromHours(1));
+        options.SetAccessTokenLifetime(TimeSpan.FromHours(2));
+        options.SetIdentityTokenLifetime(TimeSpan.FromMinutes(2));
+        options.SetRefreshTokenLifetime(TimeSpan.FromDays(14));
 
         options.DisableAccessTokenEncryption();
 

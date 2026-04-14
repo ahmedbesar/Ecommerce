@@ -70,7 +70,7 @@ public class AuthorizationController : ControllerBase
             return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
 
-        if (request.IsRefreshTokenGrantType() || request.IsAuthorizationCodeGrantType())
+        if (request.IsRefreshTokenGrantType())
         {
             var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             if (result is not { Succeeded: true })
