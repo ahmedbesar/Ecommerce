@@ -1,29 +1,23 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { PaginationState } from '../../../shared/state/pagination.state';
+import { createViewState } from '../../../shared/state/view.state';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [FormsModule, ProductCardComponent],
+  imports: [FormsModule, ProductCardComponent, PaginationComponent],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss'
 })
 export class ProductListComponent implements OnInit {
-  products = signal<Product[]>([]);
-  loading = signal<boolean>(true);
-  error = signal<string | null>(null);
+  viewState = createViewState<Product[]>([]);
+  pagination = new PaginationState();
   searchQuery = signal<string>('');
-
-  // Pagination
-  pageIndex = signal<number>(1);
-  pageSize = signal<number>(10);
-  totalCount = signal<number>(0);
-
-  totalPages = computed(() => Math.ceil(this.totalCount() / this.pageSize()) || 1);
-  pages = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
 
   constructor(private productService: ProductService) { }
 
@@ -32,36 +26,31 @@ export class ProductListComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.loading.set(true);
-    this.error.set(null);
+    this.viewState.setLoading();
+
     this.productService.getProducts({
-      pageIndex: this.pageIndex(),
-      pageSize: this.pageSize(),
+      pageIndex: this.pagination.pageIndex(),
+      pageSize: this.pagination.pageSize(),
       search: this.searchQuery() || undefined
     }).subscribe({
       next: (res) => {
-        debugger;
-        this.products.set(res.data || []);
-        this.totalCount.set(res.totalCount || 0);
-        this.pageIndex.set(res.pageIndex || 1);
-        this.loading.set(false);
+        this.viewState.setSuccess(res.data || []);
+        this.pagination.update(res.pageIndex || 1, res.totalCount || 0);
       },
       error: (err) => {
-        this.error.set('Failed to load products. Please ensure the API is running.');
-        this.loading.set(false);
+        this.viewState.setError('Failed to load products. Please ensure the API is running.');
         console.error(err);
       }
     });
   }
 
   onSearch(): void {
-    this.pageIndex.set(1);
+    this.pagination.pageIndex.set(1);
     this.loadProducts();
   }
 
   onPageChange(newPageIndex: number): void {
-    if (newPageIndex >= 1 && newPageIndex <= this.totalPages()) {
-      this.pageIndex.set(newPageIndex);
+    if (this.pagination.setPage(newPageIndex)) {
       this.loadProducts();
     }
   }

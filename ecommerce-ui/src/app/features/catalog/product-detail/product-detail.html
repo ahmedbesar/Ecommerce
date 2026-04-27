@@ -7,92 +7,88 @@
     </a>
 
     <!-- Loading State -->
-    @if (loading()) {
-      <div class="text-center py-5" id="detail-loading">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-        <p class="text-muted mt-3">Loading product details...</p>
+    @if (viewState.loading()) {
+    <div class="text-center py-5" id="detail-loading">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
+      <p class="text-muted mt-3">Loading product details...</p>
+    </div>
     }
 
     <!-- Error State -->
-    @if (error()) {
-      <div class="alert alert-danger d-flex align-items-center gap-2" id="detail-error">
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <span>{{ error() }}</span>
-      </div>
+    @if (viewState.error()) {
+    <div class="alert alert-danger d-flex align-items-center gap-2" id="detail-error">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span>{{ viewState.error() }}</span>
+    </div>
     }
 
     <!-- Product Detail -->
-    @if (!loading() && product()) {
-      <div class="row g-5 align-items-start" id="product-detail-content">
+    @if (!viewState.loading() && viewState.data()) {
+    <div class="row g-5 align-items-start" id="product-detail-content">
 
-        <!-- Image Column -->
-        <div class="col-md-5">
-          <div class="detail-image-wrapper rounded-3 overflow-hidden shadow-sm">
-            <img
-              [src]="imageUrl"
-              [alt]="product()!.name"
-              class="img-fluid w-100 detail-image"
-            />
-          </div>
-        </div>
-
-        <!-- Info Column -->
-        <div class="col-md-7">
-
-          <!-- Badges -->
-          <div class="d-flex gap-2 mb-3 flex-wrap">
-            @if (product()!.brand?.name) {
-              <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill" id="detail-brand-badge">
-                <i class="fa-solid fa-tag me-1"></i> {{ product()!.brand.name }}
-              </span>
-            }
-            @if (product()!.type?.name) {
-              <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" id="detail-type-badge">
-                <i class="fa-solid fa-layer-group me-1"></i> {{ product()!.type.name }}
-              </span>
-            }
-          </div>
-
-          <h1 class="detail-title mb-3" id="detail-product-name">{{ product()!.name }}</h1>
-
-          <div class="detail-price mb-4" id="detail-product-price">
-            <span class="price-label text-muted small me-2">Price</span>
-            <span class="price-value">${{ product()!.price | number:'1.2-2' }}</span>
-          </div>
-
-          @if (product()!.description) {
-            <div class="mb-4">
-              <h6 class="fw-semibold text-dark mb-2">
-                <i class="fa-solid fa-align-left me-1 text-primary"></i> Description
-              </h6>
-              <p class="text-muted" id="detail-product-description">{{ product()!.description }}</p>
-            </div>
-          }
-
-          @if (product()!.summary) {
-            <div class="mb-4">
-              <h6 class="fw-semibold text-dark mb-2">
-                <i class="fa-solid fa-circle-info me-1 text-primary"></i> Summary
-              </h6>
-              <p class="text-muted" id="detail-product-summary">{{ product()!.summary }}</p>
-            </div>
-          }
-
-          <!-- Action Buttons -->
-          <div class="d-flex gap-3 flex-wrap mt-4">
-            <button class="btn btn-primary btn-lg px-4" id="btn-add-to-cart">
-              <i class="fa-solid fa-cart-plus me-2"></i> Add to Cart
-            </button>
-            <a routerLink="/products" class="btn btn-outline-secondary btn-lg px-4" id="btn-continue-shopping">
-              <i class="fa-solid fa-arrow-left me-2"></i> Continue Shopping
-            </a>
-          </div>
-
+      <!-- Image Column -->
+      <div class="col-md-5">
+        <div class="detail-image-wrapper rounded-3 overflow-hidden shadow-sm">
+          <img [src]="imageUrl" [alt]="viewState.data()!.name" class="img-fluid w-100 detail-image" />
         </div>
       </div>
+
+      <!-- Info Column -->
+      <div class="col-md-7">
+
+        <!-- Badges -->
+        <div class="d-flex gap-2 mb-3 flex-wrap">
+          @if (viewState.data()!.brand?.name) {
+          <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill" id="detail-brand-badge">
+            <i class="fa-solid fa-tag me-1"></i> {{ viewState.data()!.brand.name }}
+          </span>
+          }
+          @if (viewState.data()!.type?.name) {
+          <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" id="detail-type-badge">
+            <i class="fa-solid fa-layer-group me-1"></i> {{ viewState.data()!.type.name }}
+          </span>
+          }
+        </div>
+
+        <h1 class="detail-title mb-3" id="detail-product-name">{{ viewState.data()!.name }}</h1>
+
+        <div class="detail-price mb-4" id="detail-product-price">
+          <span class="price-label text-muted small me-2">Price</span>
+          <span class="price-value">${{ viewState.data()!.price | number:'1.2-2' }}</span>
+        </div>
+
+        @if (viewState.data()!.description) {
+        <div class="mb-4">
+          <h6 class="fw-semibold text-dark mb-2">
+            <i class="fa-solid fa-align-left me-1 text-primary"></i> Description
+          </h6>
+          <p class="text-muted" id="detail-product-description">{{ viewState.data()!.description }}</p>
+        </div>
+        }
+
+        @if (viewState.data()!.summary) {
+        <div class="mb-4">
+          <h6 class="fw-semibold text-dark mb-2">
+            <i class="fa-solid fa-circle-info me-1 text-primary"></i> Summary
+          </h6>
+          <p class="text-muted" id="detail-product-summary">{{ viewState.data()!.summary }}</p>
+        </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-3 flex-wrap mt-4">
+          <button class="btn btn-primary btn-lg px-4" id="btn-add-to-cart">
+            <i class="fa-solid fa-cart-plus me-2"></i> Add to Cart
+          </button>
+          <a routerLink="/products" class="btn btn-outline-secondary btn-lg px-4" id="btn-continue-shopping">
+            <i class="fa-solid fa-arrow-left me-2"></i> Continue Shopping
+          </a>
+        </div>
+
+      </div>
+    </div>
     }
 
   </div>
