@@ -40,8 +40,9 @@ export class ProductListComponent implements OnInit {
       search: this.searchQuery() || undefined
     }).subscribe({
       next: (res) => {
+        debugger;
         this.products.set(res.data || []);
-        this.totalCount.set(res.count || 0);
+        this.totalCount.set(res.totalCount || 0);
         this.pageIndex.set(res.pageIndex || 1);
         this.loading.set(false);
       },

@@ -23,7 +23,7 @@ export interface Product {
 
 export interface PaginatedResult<T> {
   data: T[];
-  count: number;
+  totalCount: number;
   pageIndex: number;
   pageSize: number;
 }
