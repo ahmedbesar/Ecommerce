@@ -1,0 +1,42 @@
+.product-list-page {
+  min-height: calc(100vh - 200px);
+  background-color: #f8fafc;
+
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  .search-wrapper {
+    min-width: 280px;
+
+    .input-group {
+      border-radius: 0.5rem;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+
+      &:focus-within {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .input-group-text,
+      .form-control {
+        border: 0;
+        background: #fff;
+
+        &:focus {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    i {
+      display: block;
+      margin: 0 auto 1rem;
+    }
+  }
+}

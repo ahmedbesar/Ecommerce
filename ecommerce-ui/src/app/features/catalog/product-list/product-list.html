@@ -1,0 +1,96 @@
+<div class="product-list-page py-5">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div
+      class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4 gap-3">
+      <div>
+        <h1 class="page-title mb-1">
+          <i class="fa-solid fa-boxes-stacked me-2 text-primary"></i>Products
+        </h1>
+        <p class="text-muted mb-0 small">
+          @if (!loading() && !error()) {
+          Showing {{ products().length }} of {{ totalCount() }} products
+          }
+        </p>
+      </div>
+
+      <!-- Search bar -->
+      <div class="search-wrapper">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0">
+            <i class="fa-solid fa-magnifying-glass text-muted"></i>
+          </span>
+          <input type="text" class="form-control border-start-0 ps-0" placeholder="Search products, brands..."
+            [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" (keyup.enter)="onSearch()"
+            id="product-search-input" />
+          <button class="btn btn-primary" (click)="onSearch()">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+    <div class="text-center py-5" id="products-loading">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted mt-3">Loading products...</p>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+    <div class="alert alert-danger d-flex align-items-center gap-2" id="products-error">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span>{{ error() }}</span>
+      <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadProducts()" id="btn-retry">
+        <i class="fa-solid fa-rotate-right me-1"></i> Retry
+      </button>
+    </div>
+    }
+
+    <!-- Products Grid -->
+    @if (!loading() && !error()) {
+    @if (products().length === 0) {
+    <div class="empty-state text-center py-5" id="products-empty">
+      <i class="fa-solid fa-box-open text-muted mb-3" style="font-size: 3rem;"></i>
+      <h5 class="text-muted">No products found</h5>
+      <p class="text-muted small">Try adjusting your search.</p>
+    </div>
+    } @else {
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4" id="products-grid">
+      @for (product of products(); track product.id) {
+      <div class="col">
+        <app-product-card [product]="product" />
+      </div>
+      }
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (totalPages() > 1) {
+    <div class="d-flex justify-content-center mt-5">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="pageIndex() === 1">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pageIndex() - 1)">Previous</a>
+          </li>
+
+          @for (page of pages(); track page) {
+          <li class="page-item" [class.active]="pageIndex() === page">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange(page)">{{ page }}</a>
+          </li>
+          }
+
+          <li class="page-item" [class.disabled]="pageIndex() === totalPages()">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pageIndex() + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    }
+    }
+    }
+
+  </div>
+</div>
