@@ -1,13 +1,9 @@
 <div class="product-card card h-100 border-0 shadow-sm">
   <div class="product-card__image-wrapper">
-    <img
-      [src]="imageUrl"
-      [alt]="product.name"
-      class="card-img-top product-card__image"
-      loading="lazy"
-    />
+    <img [src]="imageUrl" (error)="handleImageError($event)" [alt]="product.name"
+      class="card-img-top product-card__image" loading="lazy" />
     @if (product.type?.name) {
-      <span class="product-card__badge badge">{{ product.type.name }}</span>
+    <span class="product-card__badge badge">{{ product.type.name }}</span>
     }
   </div>
 
@@ -27,10 +23,7 @@
       <span class="product-card__price fw-bold text-primary fs-5">
         ${{ product.price | number:'1.2-2' }}
       </span>
-      <a
-        [routerLink]="['/products', product.id]"
-        class="btn btn-primary btn-sm"
-        [id]="'btn-view-' + product.id">
+      <a [routerLink]="['/products', product.id]" class="btn btn-primary btn-sm" [id]="'btn-view-' + product.id">
         <i class="fa-solid fa-eye me-1"></i> View
       </a>
     </div>

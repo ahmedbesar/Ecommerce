@@ -14,9 +14,17 @@ export class ProductCardComponent {
   @Input({ required: true }) product!: Product;
 
   get imageUrl(): string {
-    if (this.product.imageFile && this.product.imageFile.startsWith('http')) {
-      return this.product.imageFile;
+    if (this.product.imageFile) {
+      if (this.product.imageFile.startsWith('http') || this.product.imageFile.startsWith('/')) {
+        return this.product.imageFile;
+      }
+      return '/' + this.product.imageFile;
     }
     return 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
+  }
+
+  handleImageError(event: Event): void {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
   }
 }

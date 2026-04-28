@@ -40,7 +40,17 @@ export class ProductDetailComponent implements OnInit {
 
   get imageUrl(): string {
     const img = this.viewState.data()?.imageFile;
-    if (img && img.startsWith('http')) return img;
+    if (img) {
+      if (img.startsWith('http') || img.startsWith('/')) {
+        return img;
+      }
+      return '/' + img;
+    }
     return 'https://placehold.co/600x400/e2e8f0/94a3b8?text=No+Image';
+  }
+
+  handleImageError(event: Event): void {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = 'https://placehold.co/600x400/e2e8f0/94a3b8?text=No+Image';
   }
 }
