@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
-import { ProductService } from '../../../core/services/product.service';
+import { ProductService } from '../../../core/services/catalog/product.service';
 import { Product } from '../../../core/models/product.model';
 import { createViewState } from '../../../shared/state/view.state';
 

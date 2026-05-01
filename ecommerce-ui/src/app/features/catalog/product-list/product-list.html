@@ -10,69 +10,144 @@
         </h1>
         <p class="text-muted mb-0 small">
           @if (!viewState.loading() && !viewState.error()) {
-          Showing {{ viewState.data().length }} of {{ pagination.totalCount() }} products
+            Showing {{ viewState.data().length }} of {{ pagination.totalCount() }} products
           }
         </p>
       </div>
 
-      <!-- Search bar -->
-      <div class="search-wrapper">
-        <div class="input-group">
-          <span class="input-group-text bg-white border-end-0">
-            <i class="fa-solid fa-magnifying-glass text-muted"></i>
-          </span>
-          <input type="text" class="form-control border-start-0 ps-0" placeholder="Search products, brands..."
-            [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" (keyup.enter)="onSearch()"
-            id="product-search-input" />
-          <button class="btn btn-primary" (click)="onSearch()">Search</button>
+      <!-- Controls (Sort & Search) -->
+      <div class="d-flex flex-column flex-sm-row gap-2 w-100" style="max-width: 500px;">
+        <select class="form-select flex-shrink-0" style="width: auto;" [ngModel]="selectedSort()" (change)="onSortFilterApply($event)">
+          <option [ngValue]="null">Sort By...</option>
+          @for (option of sortOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+
+        <div class="search-wrapper flex-grow-1">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="fa-solid fa-magnifying-glass text-muted"></i>
+            </span>
+            <input type="text" class="form-control border-start-0 ps-0" placeholder="Search products..."
+              [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" (keyup.enter)="onSearch()"
+              id="product-search-input" />
+            <button class="btn btn-primary" (click)="onSearch()">Search</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Loading State -->
-    @if (viewState.loading()) {
-    <div class="text-center py-5" id="products-loading">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
+    <div class="row">
+      <!-- Sidebar Filters -->
+      <div class="col-lg-3 mb-4 mb-lg-0">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="card-title fw-bold mb-0">Filters</h5>
+              @if (selectedBrandId() || selectedTypeId()) {
+                <button class="btn btn-sm btn-link text-decoration-none text-danger p-0" (click)="resetFilters()">
+                  Clear All
+                </button>
+              }
+            </div>
+
+            <hr>
+
+            <!-- Brands Filter -->
+            <h6 class="fw-semibold mb-3">Brands</h6>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2">
+                <div class="form-check">
+                  <input class="form-check-input cursor-pointer" type="radio" name="brandFilter" id="brandAll"
+                    [checked]="!selectedBrandId()" (change)="onBrandFilterApply(null)">
+                  <label class="form-check-label cursor-pointer" for="brandAll">All Brands</label>
+                </div>
+              </li>
+              @for (brand of brands(); track brand.id) {
+                <li class="mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input cursor-pointer" type="radio" name="brandFilter" [id]="'brand' + brand.id"
+                      [checked]="selectedBrandId() === brand.id" (change)="onBrandFilterApply(brand.id)">
+                    <label class="form-check-label cursor-pointer" [for]="'brand' + brand.id">{{ brand.name }}</label>
+                  </div>
+                </li>
+              }
+            </ul>
+
+            <!-- Types Filter -->
+            <h6 class="fw-semibold mb-3">Types</h6>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2">
+                <div class="form-check">
+                  <input class="form-check-input cursor-pointer" type="radio" name="typeFilter" id="typeAll"
+                    [checked]="!selectedTypeId()" (change)="onTypeFilterApply(null)">
+                  <label class="form-check-label cursor-pointer" for="typeAll">All Types</label>
+                </div>
+              </li>
+              @for (type of types(); track type.id) {
+                <li class="mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input cursor-pointer" type="radio" name="typeFilter" [id]="'type' + type.id"
+                      [checked]="selectedTypeId() === type.id" (change)="onTypeFilterApply(type.id)">
+                    <label class="form-check-label cursor-pointer" [for]="'type' + type.id">{{ type.name }}</label>
+                  </div>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
       </div>
-      <p class="text-muted mt-3">Loading products...</p>
-    </div>
-    }
 
-    <!-- Error State -->
-    @if (viewState.error()) {
-    <div class="alert alert-danger d-flex align-items-center gap-2" id="products-error">
-      <i class="fa-solid fa-circle-exclamation"></i>
-      <span>{{ viewState.error() }}</span>
-      <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadProducts()" id="btn-retry">
-        <i class="fa-solid fa-rotate-right me-1"></i> Retry
-      </button>
-    </div>
-    }
+      <!-- Main Content -->
+      <div class="col-lg-9">
+        <!-- Loading State -->
+        @if (viewState.loading()) {
+        <div class="text-center py-5" id="products-loading">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="text-muted mt-3">Loading products...</p>
+        </div>
+        }
 
-    <!-- Products Grid -->
-    @if (!viewState.loading() && !viewState.error()) {
-    @if (viewState.data().length === 0) {
-    <div class="empty-state text-center py-5" id="products-empty">
-      <i class="fa-solid fa-box-open text-muted mb-3" style="font-size: 3rem;"></i>
-      <h5 class="text-muted">No products found</h5>
-      <p class="text-muted small">Try adjusting your search.</p>
-    </div>
-    } @else {
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4" id="products-grid">
-      @for (product of viewState.data(); track product.id) {
-      <div class="col">
-        <app-product-card [product]="product" />
+        <!-- Error State -->
+        @if (viewState.error()) {
+        <div class="alert alert-danger d-flex align-items-center gap-2" id="products-error">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span>{{ viewState.error() }}</span>
+          <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadProducts()" id="btn-retry">
+            <i class="fa-solid fa-rotate-right me-1"></i> Retry
+          </button>
+        </div>
+        }
+
+        <!-- Products Grid -->
+        @if (!viewState.loading() && !viewState.error()) {
+          @if (viewState.data().length === 0) {
+            <div class="empty-state text-center py-5" id="products-empty">
+              <i class="fa-solid fa-box-open text-muted mb-3" style="font-size: 3rem;"></i>
+              <h5 class="text-muted">No products found</h5>
+              <p class="text-muted small">Try adjusting your filters or search query.</p>
+              <button class="btn btn-outline-primary mt-3" (click)="resetFilters()">Clear Filters</button>
+            </div>
+          } @else {
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" id="products-grid">
+              @for (product of viewState.data(); track product.id) {
+              <div class="col">
+                <app-product-card [product]="product" />
+              </div>
+              }
+            </div>
+
+            <!-- Pagination Component -->
+            <app-pagination [pageIndex]="pagination.pageIndex()" [totalPages]="pagination.totalPages()"
+              (pageChange)="onPageChange($event)">
+            </app-pagination>
+          }
+        }
       </div>
-      }
     </div>
-
-    <!-- Pagination Component -->
-    <app-pagination [pageIndex]="pagination.pageIndex()" [totalPages]="pagination.totalPages()"
-      (pageChange)="onPageChange($event)">
-    </app-pagination>
-    }
-    }
 
   </div>
 </div>
