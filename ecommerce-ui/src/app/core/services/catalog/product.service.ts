@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { PaginatedResult, Product } from '../../models/product.model';
+import { PaginatedResult, Product } from '../../models/catalog/product.model';
 
 export interface ProductQueryParams {
   pageIndex?: number;

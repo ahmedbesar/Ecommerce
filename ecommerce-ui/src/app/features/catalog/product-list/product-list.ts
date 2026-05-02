@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../core/services/catalog/product.service';
 import { BrandService } from '../../../core/services/catalog/brand.service';
 import { TypeService } from '../../../core/services/catalog/type.service';
-import { Product, ProductBrand, ProductType } from '../../../core/models/product.model';
+import { Product, ProductBrand, ProductType } from '../../../core/models/catalog/product.model';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { PaginationState } from '../../../shared/state/pagination.state';

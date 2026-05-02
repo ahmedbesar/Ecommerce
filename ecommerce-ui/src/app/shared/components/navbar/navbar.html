@@ -43,27 +43,42 @@
         </li>
       </ul>
 
-      <!-- Auth section -->
-      <div class="d-flex align-items-center gap-2">
-        @if (authService.isLoggedIn()) {
-          <span class="text-muted small me-2">
-            <i class="fa-solid fa-circle-user me-1 text-primary"></i>
-            {{ username }}
-          </span>
-          <button
-            class="btn btn-outline-danger btn-sm"
-            (click)="logout()"
-            id="btn-logout">
-            <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
-          </button>
-        } @else {
-          <a
-            class="btn btn-primary btn-sm"
-            routerLink="/login"
-            id="btn-login">
-            <i class="fa-solid fa-right-to-bracket me-1"></i> Login
-          </a>
-        }
+      <!-- Actions section -->
+      <div class="d-flex align-items-center gap-4">
+        
+        <!-- Cart Icon -->
+        <a routerLink="/basket" class="position-relative text-dark text-decoration-none d-flex align-items-center" style="cursor: pointer;" id="nav-basket">
+          <i class="fa-solid fa-cart-shopping fs-5"></i>
+          @if (getBasketCount() > 0) {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light" style="font-size: 0.65rem;">
+              {{ getBasketCount() }}
+              <span class="visually-hidden">items in cart</span>
+            </span>
+          }
+        </a>
+
+        <!-- Auth section -->
+        <div class="d-flex align-items-center gap-2">
+          @if (authService.isLoggedIn()) {
+            <span class="text-muted small me-2">
+              <i class="fa-solid fa-circle-user me-1 text-primary"></i>
+              {{ username }}
+            </span>
+            <button
+              class="btn btn-outline-danger btn-sm"
+              (click)="logout()"
+              id="btn-logout">
+              <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+            </button>
+          } @else {
+            <a
+              class="btn btn-primary btn-sm"
+              routerLink="/login"
+              id="btn-login">
+              <i class="fa-solid fa-right-to-bracket me-1"></i> Login
+            </a>
+          }
+        </div>
       </div>
     </div>
 

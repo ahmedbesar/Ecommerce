@@ -77,9 +77,20 @@
         </div>
         }
 
-        <!-- Action Buttons -->
-        <div class="d-flex gap-3 flex-wrap mt-4">
-          <button class="btn btn-primary btn-lg px-4" id="btn-add-to-cart">
+        <!-- Quantity & Action Buttons -->
+        <div class="d-flex align-items-center gap-3 flex-wrap mt-4">
+          
+          <div class="input-group" style="width: 140px;">
+            <button class="btn btn-outline-secondary px-3" type="button" (click)="decrementQuantity()">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <input type="text" class="form-control text-center fw-bold bg-white" [value]="quantity()" readonly>
+            <button class="btn btn-outline-secondary px-3" type="button" (click)="incrementQuantity()">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+
+          <button class="btn btn-primary btn-lg px-4" id="btn-add-to-cart" (click)="addToCart()">
             <i class="fa-solid fa-cart-plus me-2"></i> Add to Cart
           </button>
           <a routerLink="/products" class="btn btn-outline-secondary btn-lg px-4" id="btn-continue-shopping">

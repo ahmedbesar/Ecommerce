@@ -107,7 +107,7 @@
                                                   "DELETE"
                                               ],
                        "AuthenticationOptions":  {
-                                                     "AuthenticationProviderKey":  "Bearer"
+                                                     "AuthenticationProviderKey":  "OpenIddict.Validation.AspNetCore"
                                                  }
                    },
                    {
@@ -127,7 +127,7 @@
                                                   "DELETE"
                                               ],
                        "AuthenticationOptions":  {
-                                                     "AuthenticationProviderKey":  "Bearer"
+                                                     "AuthenticationProviderKey":  "OpenIddict.Validation.AspNetCore"
                                                  }
                    },
                    {
@@ -147,7 +147,7 @@
                                                   "DELETE"
                                               ],
                        "AuthenticationOptions":  {
-                                                     "AuthenticationProviderKey":  "Bearer"
+                                                     "AuthenticationProviderKey":  "OpenIddict.Validation.AspNetCore"
                                                  }
                    },
                    {
@@ -167,7 +167,7 @@
                                                   "DELETE"
                                               ],
                        "AuthenticationOptions":  {
-                                                     "AuthenticationProviderKey":  "Bearer"
+                                                     "AuthenticationProviderKey":  "OpenIddict.Validation.AspNetCore"
                                                  }
                    }
                ],

@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { DecimalPipe, SlicePipe } from '@angular/common';
-import { Product } from '../../../core/models/product.model';
+import { Product } from '../../../core/models/catalog/product.model';
+import { BasketService } from '../../../core/services/basket/basket.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-product-card',
@@ -12,6 +14,12 @@ import { Product } from '../../../core/models/product.model';
 })
 export class ProductCardComponent {
   @Input({ required: true }) product!: Product;
+
+  constructor(
+    private basketService: BasketService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   get imageUrl(): string {
     if (this.product.imageFile) {
@@ -26,5 +34,20 @@ export class ProductCardComponent {
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
     imgElement.src = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
+  }
+
+  addToCart(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.basketService.addItemToBasket({
+      productId: this.product.id,
+      productName: this.product.name,
+      price: this.product.price,
+      quantity: 1,
+      imageFile: this.product.imageFile
+    });
   }
 }

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -17,6 +18,11 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.LoginComponent)
+  },
+  {
+    path: 'basket',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/basket/basket.component').then((m) => m.BasketComponent)
   },
   { path: '**', redirectTo: '/home' }
 ];

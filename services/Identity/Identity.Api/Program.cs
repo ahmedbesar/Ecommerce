@@ -62,8 +62,8 @@ builder.Services.AddOpenIddict()
 
         options.DisableAccessTokenEncryption();
 
-        options.AddDevelopmentEncryptionCertificate()
-            .AddDevelopmentSigningCertificate();
+        options.AddEphemeralEncryptionKey()
+            .AddEphemeralSigningKey();
 
         options.UseAspNetCore()
             .EnableTokenEndpointPassthrough()

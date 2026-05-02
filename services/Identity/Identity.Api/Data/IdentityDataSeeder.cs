@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Identity.Api.Data;
 using Identity.Api.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +24,8 @@ public static class IdentityDataSeeder
         }
 
         var appManager = services.GetRequiredService<IOpenIddictApplicationManager>();
-        if (await appManager.FindByClientIdAsync("ecommerce_dev") is null)
+        var existingClient = await appManager.FindByClientIdAsync("ecommerce_dev");
+        if (existingClient is null)
         {
             await appManager.CreateAsync(new OpenIddictApplicationDescriptor
             {
@@ -41,8 +42,20 @@ public static class IdentityDataSeeder
                     Permissions.Prefixes.Scope + Scopes.Profile,
                     Permissions.Prefixes.Scope + Scopes.Email,
                     Permissions.Prefixes.Scope + Scopes.Roles,
+                    Permissions.Prefixes.Scope + Scopes.OfflineAccess
                 }
             });
+        }
+        else
+        {
+            // Ensure existing client has offline_access
+            var descriptor = new OpenIddictApplicationDescriptor();
+            await appManager.PopulateAsync(descriptor, existingClient);
+            if (!descriptor.Permissions.Contains(Permissions.Prefixes.Scope + Scopes.OfflineAccess))
+            {
+                descriptor.Permissions.Add(Permissions.Prefixes.Scope + Scopes.OfflineAccess);
+                await appManager.UpdateAsync(existingClient, descriptor);
+            }
         }
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();

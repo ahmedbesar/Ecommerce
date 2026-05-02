@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, tap, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { TokenResponse, UserSession } from '../models/auth.model';
+import { TokenResponse, UserSession } from '../models/identity/auth.model';
 
 const SESSION_KEY = 'currentUser';
 
@@ -33,7 +33,7 @@ export class AuthService {
     body.set('client_secret', environment.clientSecret);
     body.set('username', username);
     body.set('password', password);
-    body.set('scope', 'openid profile email roles ecommerce.api');
+    body.set('scope', 'openid profile email roles ecommerce.api offline_access');
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
@@ -44,6 +44,32 @@ export class AuthService {
         catchError((err) => {
           const message = err?.error?.error_description || 'Login failed. Please check your credentials.';
           return throwError(() => new Error(message));
+        })
+      );
+  }
+
+  refreshToken(): Observable<TokenResponse> {
+    const user = this.getCurrentUser();
+    if (!user || !user.refreshToken) {
+      this.logout();
+      return throwError(() => new Error('No refresh token available'));
+    }
+
+    const body = new URLSearchParams();
+    body.set('grant_type', 'refresh_token');
+    body.set('client_id', environment.clientId);
+    body.set('client_secret', environment.clientSecret);
+    body.set('refresh_token', user.refreshToken);
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
+    return this.http
+      .post<TokenResponse>(`${environment.identityApiUrl}/connect/token`, body.toString(), { headers })
+      .pipe(
+        tap((res) => this.storeSession(res, user.username)),
+        catchError((err) => {
+          this.logout();
+          return throwError(() => err);
         })
       );
   }

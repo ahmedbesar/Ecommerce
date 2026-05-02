@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -8,7 +8,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.4" />
     <PackageReference Include="OpenIddict.Abstractions" Version="7.4.0" />
+    <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="7.4.0" />
+    <PackageReference Include="OpenIddict.Validation.SystemNetHttp" Version="7.4.0" />
   </ItemGroup>
 </Project>
