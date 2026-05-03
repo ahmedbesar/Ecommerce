@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { BasketService } from '../../../core/services/basket/basket.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,9 @@ export class LoginComponent {
   error = signal<string | null>(null);
   showPassword = signal(false);
 
-  constructor(private authService: AuthService, private router: Router) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private basketService = inject(BasketService);
 
   onSubmit(): void {
     if (!this.username || !this.password) {
@@ -31,6 +34,7 @@ export class LoginComponent {
     this.authService.login(this.username, this.password).subscribe({
       next: () => {
         this.loading.set(false);
+        this.basketService.getBasket();
         this.router.navigate(['/products']);
       },
       error: (err: Error) => {

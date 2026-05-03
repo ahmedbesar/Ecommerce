@@ -6,9 +6,9 @@ import { ProductType } from '../../models/catalog/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class TypeService {
-  private readonly baseUrl = environment.catalogApiUrl;
+  private readonly baseUrl = environment.ocelotGateWayApiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getTypes(): Observable<ProductType[]> {
     return this.http.get<ProductType[]>(`${this.baseUrl}/Types`);

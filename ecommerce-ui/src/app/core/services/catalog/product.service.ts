@@ -15,9 +15,9 @@ export interface ProductQueryParams {
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  private readonly baseUrl = `${environment.catalogApiUrl}/Products`;
+  private readonly baseUrl = `${environment.ocelotGateWayApiUrl}/Products`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getProducts(params: ProductQueryParams = {}): Observable<PaginatedResult<Product>> {
     let httpParams = new HttpParams();

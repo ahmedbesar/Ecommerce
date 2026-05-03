@@ -7,13 +7,13 @@ import { AuthService } from '../auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class BasketService {
-  private readonly baseUrl = environment.catalogApiUrl; // Basket API goes through Ocelot
-  
+  private readonly baseUrl = environment.ocelotGateWayApiUrl; // Basket API goes through Ocelot
+
   // Local state for the basket so components can react to changes
   private basketSource = new BehaviorSubject<CustomerBasket | null>(null);
   basket$ = this.basketSource.asObservable();
-  
-  constructor(private http: HttpClient, private authService: AuthService) {}
+
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   getCurrentBasketValue(): CustomerBasket | null {
     return this.basketSource.value;
@@ -21,17 +21,20 @@ export class BasketService {
 
   getBasket(): void {
     const user = this.authService.getCurrentUser();
+
     if (!user) return;
-    
     this.http.get<CustomerBasket>(`${this.baseUrl}/Basket/${user.username}`).subscribe({
-      next: basket => this.basketSource.next(basket),
-      error: () => this.basketSource.next(null)
+      next: basket => {
+        this.basketSource.next(basket);
+      },
+      error: (err) => {
+        console.error(err);
+        this.basketSource.next(null);
+      }
     });
   }
 
   setBasket(basket: CustomerBasket): Observable<CustomerBasket> {
-    // Both Create and Update usually use the POST/PUT on Basket API.
-    // Looking at Basket API, PUT /Basket is UpdateBasket
     return this.http.put<CustomerBasket>(`${this.baseUrl}/Basket`, basket).pipe(
       tap(response => {
         this.basketSource.next(response);
@@ -72,7 +75,7 @@ export class BasketService {
       if (item.quantity <= 0) {
         basket.items = basket.items.filter(i => i.productId !== productId);
       }
-      
+
       if (basket.items.length > 0) {
         this.setBasket(basket).subscribe();
       } else {
