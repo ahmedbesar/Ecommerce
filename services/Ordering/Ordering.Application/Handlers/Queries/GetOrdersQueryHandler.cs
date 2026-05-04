@@ -33,7 +33,9 @@ namespace Ordering.Application.Handlers.Queries
                 predicate: spec.Criteria,
                 orderBy: spec.GetOrderBy(),
                 includes: spec.Includes,
-                disableTracking: true
+                disableTracking: true,
+                skip: spec.IsPagingEnabled ? spec.Skip : null,
+                take: spec.IsPagingEnabled ? spec.Take : null
             );
             
             var totalItems = await _orderRepository.CountAsync(predicate: spec.Criteria);

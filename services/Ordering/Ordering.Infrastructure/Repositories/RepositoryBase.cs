@@ -23,7 +23,9 @@ namespace Ordering.Infrastructure.Repositories
             Expression<Func<T, bool>>? predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
             List<Expression<Func<T, object>>>? includes = null,
-            bool disableTracking = true)
+            bool disableTracking = true,
+            int? skip = null,
+            int? take = null)
         {
             IQueryable<T> query = _dbContext.Set<T>();
 
@@ -33,7 +35,10 @@ namespace Ordering.Infrastructure.Repositories
             if (includes != null)
                 query = includes.Aggregate(query, (current, include) => current.Include(include));
 
-            if (orderBy != null) return await orderBy(query).ToListAsync();
+            if (orderBy != null) query = orderBy(query);
+
+            if (skip.HasValue) query = query.Skip(skip.Value);
+            if (take.HasValue) query = query.Take(take.Value);
 
             return await query.ToListAsync();
         }

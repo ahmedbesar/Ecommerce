@@ -11,7 +11,9 @@ namespace Ordering.Core.Repositories
         Task<IReadOnlyList<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null,
                                            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
                                            List<Expression<Func<T, object>>> includes = null,
-                                           bool disableTracking = true);
+                                           bool disableTracking = true,
+                                           int? skip = null,
+                                           int? take = null);
 
         Task<int> CountAsync(Expression<Func<T, bool>> predicate = null);
 
