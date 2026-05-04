@@ -15,6 +15,8 @@ export interface Product {
   summary: string;
   imageFile: string;
   price: number;
+  discountAmount: number;
+  discountedPrice: number;
   brandId: string;
   brand: ProductBrand;
   typeId: string;

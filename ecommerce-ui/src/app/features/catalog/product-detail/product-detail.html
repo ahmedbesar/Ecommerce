@@ -52,11 +52,21 @@
           }
         </div>
 
-        <h1 class="detail-title mb-3" id="detail-product-name">{{ viewState.data()!.name }}</h1>
+        <div class="d-flex align-items-center mb-3 gap-2">
+          <h1 class="detail-title mb-0" id="detail-product-name">{{ viewState.data()!.name }}</h1>
+          @if (viewState.data()!.discountAmount > 0) {
+            <span class="badge bg-danger rounded-pill px-3 py-2 fs-6">-{{ viewState.data()!.discountAmount | currency:'USD':'symbol':'1.0-0' }} OFF</span>
+          }
+        </div>
 
         <div class="detail-price mb-4" id="detail-product-price">
           <span class="price-label text-muted small me-2">Price</span>
-          <span class="price-value">${{ viewState.data()!.price | number:'1.2-2' }}</span>
+          @if (viewState.data()!.discountAmount > 0) {
+            <span class="price-value text-muted text-decoration-line-through me-2 fs-5">{{ viewState.data()!.price | currency }}</span>
+            <span class="price-value text-danger fw-bold fs-3">{{ viewState.data()!.discountedPrice | currency }}</span>
+          } @else {
+            <span class="price-value fw-bold fs-3">{{ viewState.data()!.price | currency }}</span>
+          }
         </div>
 
         @if (viewState.data()!.description) {

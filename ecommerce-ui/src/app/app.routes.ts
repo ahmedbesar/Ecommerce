@@ -24,5 +24,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./features/basket/basket.component').then((m) => m.BasketComponent)
   },
+  {
+    path: 'checkout',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/checkout/checkout.component').then((m) => m.CheckoutComponent)
+  },
+  {
+    path: 'orders',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/orders/orders.component').then((m) => m.OrdersComponent)
+  },
   { path: '**', redirectTo: '/home' }
 ];

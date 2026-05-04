@@ -28,7 +28,6 @@ export class NavbarComponent {
   }
 
   logout(): void {
-    this.basketService.clearLocalBasket();
     this.authService.logout();
   }
 }

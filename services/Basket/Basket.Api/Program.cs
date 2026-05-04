@@ -1,11 +1,9 @@
 using Basket.Application.Behaviors;
-using Basket.Application.GrpcServices;
 using Basket.Application.Mappers;
 using Basket.Core.Interfaces;
 using Basket.Infrastructure.Data.Contexts;
 using Basket.Infrastructure.Repositories;
 using Common.Authentication;
-using Discount.Grpc.Protos;
 using FluentValidation;
 using Microsoft.OpenApi;
 using StackExchange.Redis;
@@ -52,12 +50,6 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 });
 
 builder.Services.AddSingleton<BasketContext>();
-
-builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
-{
-    options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"]!);
-});
-builder.Services.AddScoped<DiscountGrpcService>();
 
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 

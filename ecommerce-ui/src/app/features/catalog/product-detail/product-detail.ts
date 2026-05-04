@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, CurrencyPipe } from '@angular/common';
 import { ProductService } from '../../../core/services/catalog/product.service';
 import { Product } from '../../../core/models/catalog/product.model';
 import { createViewState } from '../../../shared/state/view.state';
@@ -10,7 +10,7 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [RouterLink, DecimalPipe],
+  imports: [RouterLink, DecimalPipe, CurrencyPipe],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.scss'
 })
@@ -82,7 +82,7 @@ export class ProductDetailComponent implements OnInit {
     this.basketService.addItemToBasket({
       productId: product.id,
       productName: product.name,
-      price: product.price,
+      price: product.discountedPrice || product.price,
       quantity: this.quantity(),
       imageFile: product.imageFile
     }, this.quantity());

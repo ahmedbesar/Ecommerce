@@ -1,0 +1,87 @@
+<div class="orders-container">
+  <div class="orders-header">
+    <h1>My Orders</h1>
+    <p>View and manage your recent orders.</p>
+  </div>
+
+  @if (viewState.error()) {
+    <div class="alert alert-danger">
+      {{ viewState.error() }}
+    </div>
+  }
+
+  @if (viewState.loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading your orders...</p>
+    </div>
+  }
+
+  @if (!viewState.loading() && !viewState.error()) {
+    
+    <!-- Empty State -->
+    @if (viewState.data().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </div>
+        <h2>No orders yet</h2>
+        <p>Looks like you haven't placed any orders. Start shopping to see them here.</p>
+        <a routerLink="/products" class="btn btn-primary">Start Shopping</a>
+      </div>
+    }
+
+    <!-- Orders List -->
+    @if (viewState.data().length > 0) {
+      <div class="orders-list">
+        @for (order of viewState.data(); track order.id) {
+          <div class="order-card card">
+            <div class="card-header">
+              <div class="header-info">
+                <span class="order-id">Order #{{ order.id }}</span>
+              </div>
+              <span class="order-total">{{ order.totalPrice | currency }}</span>
+            </div>
+            
+            <div class="card-body">
+              <div class="info-grid">
+                
+                <div class="info-group">
+                  <span class="label">Shipping To</span>
+                  <span class="value">{{ order.firstName }} {{ order.lastName }}</span>
+                  <span class="sub-value">{{ order.addressLine }}</span>
+                  <span class="sub-value">{{ order.country }}, {{ order.zipCode }}</span>
+                </div>
+
+                <div class="info-group">
+                  <span class="label">Payment Method</span>
+                  <span class="value badge">{{ getPaymentMethodName(order.paymentMethod) }}</span>
+                  @if (order.cardNumber) {
+                    <span class="sub-value">Ending in {{ order.cardNumber | slice:-4 }}</span>
+                  }
+                </div>
+                
+                <div class="info-group">
+                  <span class="label">Contact</span>
+                  <span class="value">{{ order.emailAddress }}</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Pagination -->
+      <app-pagination 
+        [pageIndex]="pagination.pageIndex()" 
+        [totalPages]="pagination.totalPages()"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    }
+  }
+</div>

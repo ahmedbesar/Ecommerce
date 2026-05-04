@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
-import { DecimalPipe, SlicePipe } from '@angular/common';
+import { DecimalPipe, SlicePipe, CurrencyPipe } from '@angular/common';
 import { Product } from '../../../core/models/catalog/product.model';
 import { BasketService } from '../../../core/services/basket/basket.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -8,7 +8,7 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, SlicePipe],
+  imports: [RouterLink, DecimalPipe, SlicePipe, CurrencyPipe],
   templateUrl: './product-card.html',
   styleUrl: './product-card.scss'
 })
@@ -45,7 +45,7 @@ export class ProductCardComponent {
     this.basketService.addItemToBasket({
       productId: this.product.id,
       productName: this.product.name,
-      price: this.product.price,
+      price: this.product.discountedPrice || this.product.price,
       quantity: 1,
       imageFile: this.product.imageFile
     });

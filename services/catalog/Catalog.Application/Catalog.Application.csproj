@@ -19,8 +19,14 @@
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="FluentResults" Version="3.16.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.76.0" />
     <PackageReference Include="MediatR" Version="14.0.0" />
     <PackageReference Include="Riok.Mapperly" Version="4.1.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\..\..\services\Discount\Discount.Application\Protos\discount.proto" Link="Protos\discount.proto" GrpcServices="Client" />
+  </ItemGroup>
+
 
 </Project>

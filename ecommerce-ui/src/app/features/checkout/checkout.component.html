@@ -1,0 +1,158 @@
+<div class="checkout-container">
+  <div class="checkout-header">
+    <h1>Checkout</h1>
+    <p>Please complete your order details.</p>
+  </div>
+
+  <div *ngIf="submitError" class="alert alert-danger">
+    {{ submitError }}
+  </div>
+
+  <div class="checkout-content">
+    <div class="form-section">
+      <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+
+        <!-- Billing Address Section -->
+        <div class="card form-card">
+          <div class="card-header">
+            <h2>1. Billing Address</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input id="firstName" type="text" formControlName="firstName" class="form-control"
+                  [class.is-invalid]="isFieldInvalid('firstName')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('firstName')">First name is required.</div>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input id="lastName" type="text" formControlName="lastName" class="form-control"
+                  [class.is-invalid]="isFieldInvalid('lastName')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('lastName')">Last name is required.</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="emailAddress">Email Address</label>
+              <input id="emailAddress" type="email" formControlName="emailAddress" class="form-control"
+                [class.is-invalid]="isFieldInvalid('emailAddress')">
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('emailAddress')">Valid email is required.</div>
+            </div>
+
+            <div class="form-group">
+              <label for="addressLine">Address Line</label>
+              <input id="addressLine" type="text" formControlName="addressLine" class="form-control"
+                [class.is-invalid]="isFieldInvalid('addressLine')">
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('addressLine')">Address line is required.</div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="country">Country</label>
+                <input id="country" type="text" formControlName="country" class="form-control"
+                  [class.is-invalid]="isFieldInvalid('country')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('country')">Country is required.</div>
+              </div>
+              <div class="form-group">
+                <label for="zipCode">Zip Code</label>
+                <input id="zipCode" type="text" formControlName="zipCode" class="form-control"
+                  [class.is-invalid]="isFieldInvalid('zipCode')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('zipCode')">Zip code is required.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Section -->
+        <div class="card form-card">
+          <div class="card-header">
+            <h2>2. Payment Information</h2>
+          </div>
+          <div class="card-body">
+
+            <div class="payment-methods">
+              <div class="payment-option">
+                <input type="radio" id="credit" formControlName="paymentMethod" [value]="0">
+                <label for="credit">Credit Card</label>
+              </div>
+              <div class="payment-option">
+                <input type="radio" id="debit" formControlName="paymentMethod" [value]="1">
+                <label for="debit">Debit Card</label>
+              </div>
+              <div class="payment-option">
+                <input type="radio" id="paypal" formControlName="paymentMethod" [value]="2">
+                <label for="paypal">PayPal</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="cardName">Name on Card</label>
+              <input id="cardName" type="text" formControlName="cardName" class="form-control"
+                [class.is-invalid]="isFieldInvalid('cardName')">
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('cardName')">Name on card is required.</div>
+            </div>
+
+            <div class="form-group">
+              <label for="cardNumber">Card Number</label>
+              <input id="cardNumber" type="text" formControlName="cardNumber" class="form-control"
+                placeholder="1234567890123456" maxlength="16" [class.is-invalid]="isFieldInvalid('cardNumber')">
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('cardNumber')">Must be 16 digits.</div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="expiration">Expiration (MM/YY)</label>
+                <input id="expiration" type="text" formControlName="expiration" class="form-control" placeholder="MM/YY"
+                  [class.is-invalid]="isFieldInvalid('expiration')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('expiration')">Must be MM/YY format.</div>
+              </div>
+              <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input id="cvv" type="text" formControlName="cvv" class="form-control" placeholder="123" maxlength="4"
+                  [class.is-invalid]="isFieldInvalid('cvv')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('cvv')">Must be 3-4 digits.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg mt-4" [disabled]="checkoutForm.invalid">
+          <span *ngIf="isSubmitting" class="spinner"></span>
+          <span *ngIf="!isSubmitting">Checkout</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Order Summary Section -->
+    <div class="summary-section">
+      <div class="card summary-card">
+        <div class="card-header">
+          <h2>Order Summary</h2>
+        </div>
+        <div class="card-body">
+          <div *ngIf="basket && basket.items.length > 0; else emptyBasket">
+            <ul class="summary-items">
+              <li *ngFor="let item of basket.items" class="summary-item">
+                <div class="item-info">
+                  <span class="item-name">{{ item.productName }}</span>
+                  <span class="item-qty">x {{ item.quantity }}</span>
+                </div>
+                <span class="item-price">{{ (item.price * item.quantity) | currency }}</span>
+              </li>
+            </ul>
+            <div class="summary-total">
+              <strong>Total:</strong>
+              <strong>{{ basketTotal | currency }}</strong>
+            </div>
+
+          </div>
+          <ng-template #emptyBasket>
+            <p class="text-muted">Your basket is empty.</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

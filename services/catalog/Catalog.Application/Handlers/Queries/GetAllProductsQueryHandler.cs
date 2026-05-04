@@ -1,3 +1,4 @@
+using Catalog.Application.GrpcServices;
 using Catalog.Application.Mappers;
 using Catalog.Application.Queries;
 using Catalog.Application.Responses;
@@ -13,11 +14,13 @@ public sealed class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQ
 {
     private readonly IProductRepository _repository;
     private readonly ProductMapper _mapper;
+    private readonly DiscountGrpcService _discountGrpcService;
 
-    public GetAllProductsQueryHandler(IProductRepository repository, ProductMapper mapper)
+    public GetAllProductsQueryHandler(IProductRepository repository, ProductMapper mapper, DiscountGrpcService discountGrpcService)
     {
         _repository = repository;
         _mapper = mapper;
+        _discountGrpcService = discountGrpcService;
     }
 
     public async Task<Result<Pagination<ProductResponseDto>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
@@ -26,7 +29,22 @@ public sealed class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQ
 
         var paginatedProducts = await _repository.GetProductsAsync(spec, cancellationToken);
 
-        var response = _mapper.ToResponseListDto(paginatedProducts.Data);
+        var response = _mapper.ToResponseListDto(paginatedProducts.Data).ToList();
+
+        // Enrich each product with discount info from Discount gRPC service
+        foreach (var product in response)
+        {
+            var coupon = await _discountGrpcService.GetDiscount(product.Name);
+            if (coupon != null && coupon.Amount > 0)
+            {
+                product.DiscountAmount = coupon.Amount;
+                product.DiscountedPrice = product.Price - coupon.Amount;
+            }
+            else
+            {
+                product.DiscountedPrice = product.Price;
+            }
+        }
 
         var pagination = new Pagination<ProductResponseDto>(
             paginatedProducts.PageIndex,

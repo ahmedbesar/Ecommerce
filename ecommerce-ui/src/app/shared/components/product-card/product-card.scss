@@ -42,6 +42,19 @@
     border-radius: 2rem;
   }
 
+  &__discount-badge {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    background-color: #ef4444;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
   &__brand {
     font-size: 0.75rem;
     letter-spacing: 0.02em;
@@ -62,6 +75,17 @@
     font-size: 0.8rem;
     line-height: 1.5;
     color: #94a3b8;
+  }
+
+  &__price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  &__price-original {
+    font-size: 0.8rem;
+    line-height: 1;
   }
 
   &__price {

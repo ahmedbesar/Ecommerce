@@ -94,4 +94,13 @@ export class BasketService {
     };
     return basket;
   }
+
+  checkout(payload: any): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/Basket/checkout`, payload).pipe(
+      tap(() => {
+        // Clear basket locally after successful checkout
+        this.getBasket();
+      })
+    );
+  }
 }

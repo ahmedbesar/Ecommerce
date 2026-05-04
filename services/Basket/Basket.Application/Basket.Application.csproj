@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -13,17 +13,11 @@
     <PackageReference Include="MassTransit" Version="8.3.4" />
     <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="Riok.Mapperly" Version="4.3.1" />
-	  <PackageReference Include="Grpc.AspNetCore" Version="2.76.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Basket.Core\Basket.Core.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\EventBus.Messages\EventBus.Messages.csproj" />
   </ItemGroup>
-
-	
-	<ItemGroup>
-		<Protobuf Include="..\..\..\services\Discount\Discount.Application\Protos\discount.proto" Link="Protos\discount.proto" GrpcServices="Client" />
-	</ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿services:
+services:
     catalog.api:
      image: ${DOCKER_REGISTRY-}catalogapi
      build:
@@ -21,6 +21,7 @@
       - Authentication__Authority=http://identity.api:8011
       - Authentication__Audience=ecommerce_resource
       - Authentication__RequireHttpsMetadata=false
+      - GrpcSettings__DiscountUrl=http://discount.api:5002
 
     catalogdb:
      image: mongo
@@ -45,7 +46,6 @@
      environment:
       - ASPNETCORE_URLS=http://+:8001
       - CacheSettings__ConnectionString=redis:6379
-      - GrpcSettings__DiscountUrl=http://discount.api:5002
       - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
       - ElasticConfiguration__Uri=http://elasticsearch:9200
       - Authentication__Authority=http://identity.api:8011

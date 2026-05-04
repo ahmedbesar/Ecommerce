@@ -48,6 +48,9 @@
         <!-- Auth section -->
         <div class="d-flex align-items-center gap-2">
           @if (authService.isLoggedIn()) {
+          <a class="text-muted small me-3 text-decoration-none" routerLink="/orders" id="nav-orders">
+            <i class="fa-solid fa-box me-1 text-primary"></i> My Orders
+          </a>
           <span class="text-muted small me-2">
             <i class="fa-solid fa-circle-user me-1 text-primary"></i>
             {{ username }}

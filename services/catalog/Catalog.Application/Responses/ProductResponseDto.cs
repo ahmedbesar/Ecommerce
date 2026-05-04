@@ -8,6 +8,8 @@ namespace Catalog.Application.Responses
         public string Summary { get; set; }
         public string ImageFile { get; set; }
         public decimal Price { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal DiscountedPrice { get; set; }
         public ProductBrandResponseDto Brand { get; set; }
         public ProductTypeResponseDto Type { get; set; }
     }

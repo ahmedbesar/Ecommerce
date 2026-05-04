@@ -1,10 +1,12 @@
-﻿using Catalog.Application.Behaviors;
+using Catalog.Application.Behaviors;
+using Catalog.Application.GrpcServices;
 using Catalog.Application.Mappers;
 using Catalog.Core.Interfaces;
 using Catalog.Infrastructure.Data.Contexts;
 using Catalog.Infrastructure.Repositories;
 using Common.Authentication;
 using Common.Logging;
+using Discount.Grpc.Protos;
 using FluentValidation;
 using Microsoft.OpenApi;
 
@@ -49,6 +51,13 @@ builder.Services.AddScoped<ITypeRepository, TypeRepository>();
 builder.Services.AddSingleton<ProductMapper>();
 builder.Services.AddSingleton<BrandMapper>();
 builder.Services.AddSingleton<TypeMapper>();
+
+// gRPC Client for Discount Service
+builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"]!);
+});
+builder.Services.AddScoped<DiscountGrpcService>();
 
 builder.Services.AddValidatorsFromAssembly(typeof(Catalog.Application.Commands.CreateProductCommand).Assembly);
 
